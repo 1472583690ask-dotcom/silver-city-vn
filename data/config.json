@@ -1,0 +1,120 @@
+{
+  "game": {
+    "title": "白银之城 · 事务所的清晨",
+    "author": "凌天麒凕",
+    "start_scene": "prologue"
+  },
+  "characters": {
+    "detective": {
+      "name": "侦探",
+      "color": "#4a5568",
+      "expressions": {
+        "default": "detective_default.webp",
+        "serious": "detective_serious.webp"
+      }
+    },
+    "afu": {
+      "name": "阿芙",
+      "color": "#e53e3e",
+      "expressions": {
+        "default": "afu_default.webp",
+        "excited": "afu_excited.webp",
+        "confused": "afu_confused.webp",
+        "shocked": "afu_shocked.webp",
+        "happy": "afu_happy.webp",
+        "sad": "afu_sad.webp",
+        "proud": "afu_proud.webp",
+        "amazed": "afu_amazed.webp",
+        "determined": "afu_determined.webp"
+      }
+    },
+    "ashley": {
+      "name": "厄什栗",
+      "color": "#805ad5",
+      "expressions": {
+        "default": "ashley_default.webp",
+        "surprised": "ashley_surprised.webp",
+        "happy": "ashley_happy.webp",
+        "worried": "ashley_worried.webp",
+        "determined": "ashley_determined.webp",
+        "gentle": "ashley_gentle.webp",
+        "thoughtful": "ashley_thoughtful.webp",
+        "sympathetic": "ashley_sympathetic.webp",
+        "peaceful": "ashley_peaceful.webp"
+      }
+    }
+  },
+  "backgrounds": {
+    "title_bg": {
+      "file": "title.webp",
+      "desc": "标题画面插图"
+    },
+    "black": {
+      "file": "black.webp",
+      "desc": "黑屏"
+    },
+    "bedroom": {
+      "file": "bedroom.webp",
+      "desc": "侦探卧室"
+    },
+    "staircase": {
+      "file": "staircase.webp",
+      "desc": "楼梯"
+    },
+    "wild_path": {
+      "file": "wild_path.webp",
+      "desc": "野外小路"
+    },
+    "wild_river": {
+      "file": "wild_river.webp",
+      "desc": "野外河边"
+    },
+    "wild_sunset": {
+      "file": "wild_sunset.webp",
+      "desc": "野外日落"
+    },
+    "town_street": {
+      "file": "town_street.webp",
+      "desc": "城镇街道"
+    },
+    "town_cafe": {
+      "file": "town_cafe.webp",
+      "desc": "咖啡厅"
+    },
+    "town_flower": {
+      "file": "town_flower.webp",
+      "desc": "花店"
+    }
+  },
+  "music": {
+    "bgm_title": {
+      "file": "bgm_title.mp3",
+      "desc": "登陆界面"
+    },
+    "bgm_prologue": {
+      "file": "bgm_prologue.mp3",
+      "desc": "序章白银之城"
+    },
+    "bgm_daily1": {
+      "file": "bgm_daily1.mp3",
+      "desc": "日常轻快"
+    },
+    "bgm_daily2": {
+      "file": "bgm_daily2.mp3",
+      "desc": "日常悠闲"
+    },
+    "bgm_daily3": {
+      "file": "bgm_daily3.mp3",
+      "desc": "日常温暖"
+    },
+    "bgm_bar": {
+      "file": "bgm_bar.mp3",
+      "desc": "酒吧/咖啡馆"
+    },
+    "bgm_world": {
+      "file": "bgm_world.mp3",
+      "desc": "世界/情怀"
+    }
+  },
+  "sfx": {}
+}
