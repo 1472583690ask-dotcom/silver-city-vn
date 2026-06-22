@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>白银之城 · 事务所的清晨</title>
+  <meta property="og:title" content="白银之城 · 事务所的清晨">
+  <meta property="og:description" content="侦探、阿芙、厄什栗——白银之城的第一个休息日，命运的分岔路口。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="白银之城 同人Gal">
+  <meta name="x5-orientation" content="portrait">
+  <meta name="x5-fullscreen" content="true">
+  <meta name="x5-page-mode" content="app">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="白银之城">
+  <meta name="theme-color" content="#0a0a0f">
+  <style>
+/* ========================================
+   白银之城 · 视觉小说样式
+   Silver City VN - Stylesheet
+   ======================================== */
+
+/* ==================== 基础重置 ==================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'VNFont';
+  src: local('Noto Serif SC'), local('SimSun'), local('serif');
+}
+
+:root {
+  --textbox-bg: rgba(10, 10, 20, 0.92);
+  --textbox-border: rgba(192, 192, 220, 0.15);
+  --accent: #8B9DC3;
+  --accent-glow: rgba(139, 157, 195, 0.3);
+  --text-color: #E8E8F0;
+  --text-dim: #8899AA;
+  --menu-bg: rgba(8, 8, 18, 0.96);
+  --choice-hover: rgba(139, 157, 195, 0.15);
+  --choice-border: rgba(139, 157, 195, 0.4);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: 'VNFont', 'Noto Serif SC', serif;
+  color: var(--text-color);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ==================== 启动画面 ==================== */
+#splash-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+#splash-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.splash-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(ellipse at center, #0f1020 0%, #050510 80%);
+}
+
+.splash-content {
+  position: relative;
+  text-align: center;
+  z-index: 1;
+}
+
+.splash-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 52px;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  color: #f0f2fa;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.85), 0 0 12px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3);
+  margin-bottom: 12px;
+}
+
+.splash-subtitle {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 17px;
+  letter-spacing: 0.2em;
+  color: #e0e4f0;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.85), 0 0 8px rgba(0,0,0,0.5);
+  margin-bottom: 60px;
+}
+
+.splash-hint {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: #c8d0e0;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.85), 0 0 6px rgba(0,0,0,0.4);
+  animation: splashPulse 2s ease-in-out infinite;
+}
+
+@keyframes splashPulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+/* ==================== 游戏容器 ==================== */
+#game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #0a0a0f;
+}
+
+/* ==================== 背景层 ==================== */
+#bg-layer {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-color: #0a0a0f;
+}
+
+.bg-image {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.bg-image.active {
+  opacity: 1;
+}
+
+.bg-image.fade-in {
+  animation: bgFadeIn 0.6s ease forwards;
+}
+
+@keyframes bgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ==================== 角色层 ==================== */
+#char-layer {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.char-sprite {
+  position: absolute;
+  bottom: 0;
+  width: 35%;
+  height: 80%;
+  background-size: contain;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.5s ease, left 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.char-sprite.active {
+  opacity: 1;
+}
+
+.char-sprite.fade-in {
+  animation: charFadeIn 0.5s ease forwards;
+}
+
+.char-sprite.fade-out {
+  animation: charFadeOut 0.5s ease forwards;
+}
+
+.char-sprite.position-left   { left: 5%;  transform: translateX(0); }
+.char-sprite.position-center { left: 50%; transform: translateX(-50%); }
+.char-sprite.position-right  { left: 60%; transform: translateX(0); }
+.char-sprite.position-far-left  { left: -5%;  transform: translateX(0); }
+.char-sprite.position-far-right { left: 70%; transform: translateX(0); }
+
+@keyframes charFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes charFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ==================== 文本框 ==================== */
+#text-box {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background: linear-gradient(to top, var(--textbox-bg) 0%, var(--textbox-bg) 85%, transparent 100%);
+  border-top: 1px solid var(--textbox-border);
+  padding: 24px 48px 32px;
+  min-height: 180px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+#text-box.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#name-tag {
+  position: absolute;
+  top: -28px;
+  left: 60px;
+  background: var(--textbox-bg);
+  border: 1px solid var(--textbox-border);
+  border-bottom: none;
+  padding: 6px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  display: none;
+}
+
+#dialogue-text {
+  font-size: 18px;
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+  color: var(--text-color);
+  min-height: 68px;
+}
+
+/* ==================== 点击提示 ==================== */
+#click-indicator {
+  position: absolute;
+  bottom: 40px;
+  right: 48px;
+  z-index: 11;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: clickBounce 1.2s ease-in-out infinite;
+  display: none;
+}
+
+#click-indicator.visible {
+  display: block;
+  opacity: 0.7;
+}
+
+@keyframes clickBounce {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50%      { transform: rotate(45deg) translate(4px, 4px); }
+}
+
+/* ==================== 选择分支 ==================== */
+#choice-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#choice-container.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.choice-prompt {
+  text-align: center;
+  font-size: 16px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  letter-spacing: 0.06em;
+}
+
+.choice-btn {
+  background: rgba(10, 10, 25, 0.88);
+  border: 1px solid var(--choice-border);
+  color: var(--text-color);
+  padding: 14px 40px;
+  font-size: 17px;
+  font-family: inherit;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  animation: choiceSlideIn 0.4s ease both;
+  min-width: 320px;
+  text-align: center;
+}
+
+.choice-btn:hover {
+  background: var(--choice-hover);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+  transform: translateX(6px);
+}
+
+.choice-btn:active {
+  transform: scale(0.98);
+}
+
+@keyframes choiceSlideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ==================== 标题画面 ==================== */
+#title-screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, #0f0f1a 0%, #050510 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+#title-screen.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.title-text {
+  font-size: 48px;
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  color: var(--text-color);
+  text-shadow: 0 0 40px var(--accent-glow);
+  margin-bottom: 8px;
+}
+
+.subtitle-text {
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  margin-bottom: 56px;
+}
+
+.title-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text-color);
+  padding: 12px 48px;
+  font-size: 15px;
+  font-family: inherit;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 6px 0;
+  min-width: 220px;
+}
+
+.title-btn:hover {
+  border-color: var(--accent);
+  background: rgba(139,157,195,0.08);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+/* ==================== 菜单 ==================== */
+.menu-btn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  z-index: 40;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-family: inherit;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  padding: 6px 14px;
+  transition: color 0.3s ease;
+}
+
+.menu-btn:hover {
+  color: var(--text-color);
+}
+
+.menu-panel,
+.settings-panel,
+.save-load-panel {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 60;
+  background: var(--menu-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.menu-panel.visible,
+.settings-panel.visible,
+.save-load-panel.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.menu-panel .panel-title,
+.settings-panel .panel-title,
+.save-load-panel .panel-title {
+  font-size: 22px;
+  letter-spacing: 0.15em;
+  color: var(--text-color);
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+
+.menu-item {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-color);
+  padding: 10px 56px;
+  font-size: 15px;
+  font-family: inherit;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 4px 0;
+  min-width: 240px;
+  text-align: center;
+}
+
+.menu-item:hover {
+  border-color: var(--accent);
+  background: rgba(139,157,195,0.06);
+}
+
+.close-btn,
+.back-btn {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  transition: color 0.3s ease;
+}
+
+.close-btn:hover,
+.back-btn:hover {
+  color: var(--text-color);
+}
+
+.back-btn {
+  right: auto;
+  left: 28px;
+}
+
+/* ==================== 设置面板 ==================== */
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 380px;
+  margin: 12px 0;
+}
+
+.setting-label {
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  color: var(--text-color);
+}
+
+.setting-row input[type="range"] {
+  width: 180px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  outline: none;
+}
+
+.setting-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+/* 自动模式切换开关 */
+.toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.12);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transition: 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: rgba(139,157,195,0.4);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+  background: var(--accent);
+}
+
+/* ==================== 存档面板 ==================== */
+.slot-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 560px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.save-slot {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.save-slot:hover {
+  border-color: var(--accent);
+  background: rgba(139,157,195,0.06);
+}
+
+.save-slot.has-data {
+  border-color: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+
+.slot-number {
+  font-size: 13px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+
+.slot-info {
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.slot-scene {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.slot-empty {
+  font-size: 14px;
+  color: rgba(255,255,255,0.2);
+  font-style: italic;
+}
+
+/* ==================== 结局画面 ==================== */
+#ending-screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #050510;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+
+#ending-screen.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#ending-text {
+  font-size: 24px;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  margin-bottom: 48px;
+}
+
+/* ==================== 遮罩层 ==================== */
+#overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#overlay.visible {
+  opacity: 1;
+}
+
+/* ==================== 背景占位符 (无素材降级) ==================== */
+.bg-placeholder {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+.bg-placeholder.fade-out {
+  opacity: 0;
+}
+
+.bg-placeholder-label {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-family: inherit;
+  letter-spacing: 0.12em;
+  opacity: 0.6;
+  padding: 4px 16px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.3);
+  z-index: 1;
+}
+
+.bg-placeholder-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 400px;
+  height: 400px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+@keyframes bgPlaceholderFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ==================== 角色占位符 (无素材降级) ==================== */
+.char-placeholder {
+  position: absolute;
+  bottom: 0;
+  width: 30%;
+  height: 72%;
+  opacity: 0;
+  transition: opacity 0.5s ease, left 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.char-placeholder.active {
+  opacity: 1;
+}
+
+.char-placeholder.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.char-placeholder.placeholder-fade-in {
+  animation: placeholderFadeIn 0.5s ease forwards;
+}
+
+@keyframes placeholderFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 位置 */
+.char-placeholder[data-position="left"]       { left: 5%;  }
+.char-placeholder[data-position="center"]     { left: 50%; transform: translateX(-50%); }
+.char-placeholder[data-position="right"]      { left: 65%; }
+.char-placeholder[data-position="far-left"]   { left: -5%; }
+.char-placeholder[data-position="far-right"]  { left: 73%; }
+
+.char-placeholder[data-position="center"].active { transform: translateX(-50%); }
+
+.char-placeholder-box {
+  width: 100%;
+  height: 80%;
+  border: 1px solid;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 16px;
+}
+
+.char-placeholder-name {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  font-family: inherit;
+}
+
+.char-placeholder-expression {
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  font-family: inherit;
+}
+
+.char-placeholder-line {
+  width: 60%;
+  height: 1px;
+  opacity: 0.5;
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 768px) {
+  #text-box {
+    padding: 18px 24px 24px;
+    min-height: 150px;
+  }
+
+  #dialogue-text {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .title-text {
+    font-size: 32px;
+  }
+
+  .choice-btn {
+    min-width: 260px;
+    padding: 12px 32px;
+    font-size: 15px;
+  }
+
+  .slot-list {
+    width: 90%;
+    grid-template-columns: 1fr;
+  }
+
+  .char-sprite {
+    width: 45%;
+  }
+
+  .char-placeholder {
+    width: 40%;
+  }
+
+  .char-placeholder-name {
+    font-size: 17px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="bg-layer"></div>
+    <div id="char-layer"></div>
+    <div id="overlay"></div>
+    <div id="text-box">
+      <div id="name-tag"></div>
+      <div id="dialogue-text"></div>
+    </div>
+    <div id="click-indicator"></div>
+    <div id="choice-container"></div>
+    <button id="btn-menu" class="menu-btn">菜单</button>
+
+    <div id="title-screen">
+      <div class="title-text"></div>
+      <div class="subtitle-text"></div>
+      <button id="btn-start" class="title-btn">新游戏</button>
+      <button id="btn-continue" class="title-btn">继续</button>
+    </div>
+
+    <div id="menu-panel" class="menu-panel">
+      <div class="panel-title">菜单</div>
+      <button id="menu-resume" class="menu-item">继续游戏</button>
+      <button id="menu-save" class="menu-item">保存进度</button>
+      <button id="menu-load" class="menu-item">读取进度</button>
+      <button id="menu-settings" class="menu-item">设置</button>
+      <button id="menu-title" class="menu-item">返回标题</button>
+      <button class="close-btn menu-item" style="border:none;min-width:auto;margin-top:16px;">关闭</button>
+    </div>
+
+    <div id="settings-panel" class="settings-panel">
+      <div class="panel-title">设置</div>
+      <div class="setting-row">
+        <span class="setting-label">文本速度</span>
+        <input type="range" id="speed-slider" min="1" max="100" value="40">
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">自动播放</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="auto-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">背景音乐</span>
+        <input type="range" id="bgm-volume" min="0" max="1" step="0.05" value="0.7">
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">音效</span>
+        <input type="range" id="sfx-volume" min="0" max="1" step="0.05" value="0.8">
+      </div>
+      <button id="settings-back" class="menu-item" style="margin-top:20px;">返回</button>
+    </div>
+
+    <div id="save-load-panel" class="save-load-panel">
+      <button id="save-back" class="back-btn">← 返回</button>
+      <div class="panel-title">存档</div>
+      <div class="slot-list"></div>
+    </div>
+
+    <div id="ending-screen">
+      <div id="ending-text"></div>
+      <button id="ending-back" class="title-btn">返回标题</button>
+    </div>
+  </div>
+
+  <script>
+    var VN_INLINE_CONFIG = {"game":{"title":"白银之城 · 事务所的清晨","author":"凌天麒凕","start_scene":"prologue"},"characters":{"detective":{"name":"侦探","color":"#4a5568","expressions":{"default":"detective_default.webp","serious":"detective_serious.webp"}},"afu":{"name":"阿芙","color":"#e53e3e","expressions":{"default":"afu_default.webp","excited":"afu_excited.webp","confused":"afu_confused.webp","shocked":"afu_shocked.webp","happy":"afu_happy.webp","sad":"afu_sad.webp","proud":"afu_proud.webp","amazed":"afu_amazed.webp","determined":"afu_determined.webp"}},"ashley":{"name":"厄什栗","color":"#805ad5","expressions":{"default":"ashley_default.webp","surprised":"ashley_surprised.webp","happy":"ashley_happy.webp","worried":"ashley_worried.webp","determined":"ashley_determined.webp","gentle":"ashley_gentle.webp","thoughtful":"ashley_thoughtful.webp","sympathetic":"ashley_sympathetic.webp","peaceful":"ashley_peaceful.webp"}}},"backgrounds":{"title_bg":{"file":"title.webp","desc":"标题画面插图"},"black":{"file":"black.webp","desc":"黑屏"},"bedroom":{"file":"bedroom.webp","desc":"侦探卧室"},"staircase":{"file":"staircase.webp","desc":"楼梯"},"wild_path":{"file":"wild_path.webp","desc":"野外小路"},"wild_river":{"file":"wild_river.webp","desc":"野外河边"},"wild_sunset":{"file":"wild_sunset.webp","desc":"野外日落"},"town_street":{"file":"town_street.webp","desc":"城镇街道"},"town_cafe":{"file":"town_cafe.webp","desc":"咖啡厅"},"town_flower":{"file":"town_flower.webp","desc":"花店"}},"music":{"bgm_title":{"file":"bgm_title.mp3","desc":"登陆界面"},"bgm_prologue":{"file":"bgm_prologue.mp3","desc":"序章白银之城"},"bgm_daily1":{"file":"bgm_daily1.mp3","desc":"日常轻快"},"bgm_daily2":{"file":"bgm_daily2.mp3","desc":"日常悠闲"},"bgm_daily3":{"file":"bgm_daily3.mp3","desc":"日常温暖"},"bgm_bar":{"file":"bgm_bar.mp3","desc":"酒吧/咖啡馆"},"bgm_world":{"file":"bgm_world.mp3","desc":"世界/情怀"}},"sfx":{}};
+    var VN_INLINE_SCRIPT = {"scenes":{"prologue":{"name":"序章 · 清晨","script":[{"type":"bg","id":"bedroom"},{"type":"bgm","id":"bgm_daily1","volume":0.5,"fadeIn":1500},{"type":"wait","duration":1000},{"type":"narration","text":"清晨的阳光透过窗帘的缝隙，在地板上投下一道细长的光。"},{"type":"narration","text":"我睁开眼睛，望着天花板上熟悉的花纹。"},{"type":"narration","text":"……"},{"type":"narration","text":"对了。"},{"type":"narration","text":"今天约好了，要和阿芙、厄什栗一起出去。"},{"type":"narration","text":"回到白银之城的第一个休息日。"},{"type":"wait","duration":500},{"type":"bg","id":"staircase"},{"type":"narration","text":"我洗漱完毕，走下楼梯。"},{"type":"jump","target":"scene_downstairs"}]},"scene_downstairs":{"name":"楼下的等待","script":[{"type":"char_show","id":"afu","position":"left"},{"type":"char_show","id":"ashley","position":"right"},{"type":"wait","duration":300},{"type":"narration","text":"客厅里，两个人已经在等了。"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"侦探——！你醒啦！"},{"type":"dialogue","character":"afu","text":"阿芙等了好久好久！"},{"type":"dialogue","character":"detective","text":"……你们来的真早。"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"早安，侦探先生。"},{"type":"dialogue","character":"ashley","text":"我们也是刚到不久。"},{"type":"dialogue","character":"ashley","text":"阿芙小姐……天没亮就来敲门了。"},{"type":"char_expr","id":"afu","expression":"proud"},{"type":"dialogue","character":"afu","text":"因为要出去玩嘛！阿芙睡不着！"},{"type":"dialogue","character":"detective","text":"看出来了。"},{"type":"jump","target":"scene_proposal"}]},"scene_proposal":{"name":"两个提议","script":[{"type":"dialogue","character":"afu","text":"对了侦探！我们今天去哪里玩？"},{"type":"dialogue","character":"afu","text":"阿芙有个好主意！"},{"type":"char_move","id":"afu","position":"center"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"我们去城外玩吧！"},{"type":"dialogue","character":"afu","text":"野外有好多好多好玩的东西！"},{"type":"dialogue","character":"afu","text":"花啊草啊虫子啊！还有会飞的小鸟！"},{"type":"dialogue","character":"detective","text":"……你对白银之城不熟吗？"},{"type":"char_expr","id":"afu","expression":"confused"},{"type":"dialogue","character":"afu","text":"白银之城？"},{"type":"dialogue","character":"afu","text":"阿芙是女仆协会派来的，才来没多久啦。"},{"type":"dialogue","character":"afu","text":"城里的东西阿芙都看不懂，还是野外比较好玩！"},{"type":"dialogue","character":"detective","text":"（原来如此……难怪她什么都觉得新鲜。）"},{"type":"char_move","id":"afu","position":"left"},{"type":"char_move","id":"ashley","position":"center"},{"type":"char_expr","id":"ashley","expression":"thoughtful"},{"type":"dialogue","character":"ashley","text":"那个……侦探先生。"},{"type":"dialogue","character":"ashley","text":"如果您不介意的话……我想带您在城里走走。"},{"type":"dialogue","character":"ashley","text":"您离开了三年，白银之城变化很大。"},{"type":"dialogue","character":"ashley","text":"很多地方都不一样了，还有一些新开的店铺和街道……"},{"type":"dialogue","character":"ashley","text":"我想，您可能会想看看。"},{"type":"char_move","id":"ashley","position":"right"},{"type":"narration","text":"两个人，两个提议。"},{"type":"narration","text":"一边是对一切都充满好奇、想带我去探索野外的阿芙。"},{"type":"narration","text":"一边是细心体贴、想带我看看三年来城市变化的厄什栗。"},{"type":"narration","text":"……该选哪一边呢？"},{"type":"choice","prompt":"今天去哪里？","options":[{"text":"「去野外吧。」","jump":"wild_start","flag_set":"route","value":"wild"},{"text":"「在城里逛逛吧。」","jump":"town_start","flag_set":"route","value":"town"}]}]},"wild_start":{"name":"野外线 · 出发","script":[{"type":"bgm","id":"bgm_daily2","volume":0.5,"fadeIn":1500},{"type":"dialogue","character":"detective","text":"去野外吧。"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"耶——！！"},{"type":"dialogue","character":"afu","text":"侦探选了阿芙的提议！"},{"type":"dialogue","character":"ashley","text":"……好的。"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"那我也一起去吧。"},{"type":"dialogue","character":"ashley","text":"野外的路……我也认得一些。"},{"type":"dialogue","character":"afu","text":"太好了！三个人一起去！"},{"type":"bg","id":"wild_path"},{"type":"char_hide","id":"afu"},{"type":"char_hide","id":"ashley"},{"type":"wait","duration":500},{"type":"narration","text":"走出白银城的城门，沿着小路往郊外走。"},{"type":"narration","text":"银白色的月光渐渐被阳光取代，空气里弥漫着青草的味道。"},{"type":"char_show","id":"afu","position":"left"},{"type":"char_show","id":"ashley","position":"right"},{"type":"char_expr","id":"afu","expression":"amazed"},{"type":"dialogue","character":"afu","text":"哇——！好多绿色！"},{"type":"dialogue","character":"afu","text":"阿芙还是第一次看到这么多草！"},{"type":"dialogue","character":"detective","text":"……你以前都待在哪里？"},{"type":"dialogue","character":"afu","text":"女仆协会啊！"},{"type":"dialogue","character":"afu","text":"那里有好多好多房间，还有好多好多要学的东西。"},{"type":"dialogue","character":"afu","text":"阿芙每天都在学习，从来没有出来玩过！"},{"type":"dialogue","character":"ashley","text":"……这样啊。"},{"type":"char_expr","id":"ashley","expression":"sympathetic"},{"type":"dialogue","character":"ashley","text":"那今天，就好好玩吧。"},{"type":"jump","target":"wild_discovery"}]},"wild_discovery":{"name":"野外线 · 发现","script":[{"type":"dialogue","character":"afu","text":"侦探侦探！你看那个！"},{"type":"char_move","id":"afu","position":"center"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"那是什么花？好漂亮！"},{"type":"narration","text":"阿芙指着路边一丛银白色的小花。"},{"type":"dialogue","character":"detective","text":"那是银星花。白银之城郊外很常见。"},{"type":"dialogue","character":"afu","text":"银星花……好好听的名字！"},{"type":"dialogue","character":"afu","text":"阿芙可以摘一朵吗？"},{"type":"dialogue","character":"detective","text":"……别摘太多。"},{"type":"dialogue","character":"afu","text":"好——！"},{"type":"narration","text":"阿芙蹲下来，小心翼翼地摘了一朵，别在了自己的发间。"},{"type":"char_expr","id":"afu","expression":"happy"},{"type":"dialogue","character":"afu","text":"怎么样怎么样？好看吗？"},{"type":"dialogue","character":"detective","text":"……嗯。"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"很适合你，阿芙小姐。"},{"type":"dialogue","character":"afu","text":"嘿嘿~"},{"type":"char_move","id":"afu","position":"left"},{"type":"jump","target":"wild_talk"}]},"wild_talk":{"name":"野外线 · 对话","script":[{"type":"narration","text":"我们沿着小路继续往前走。"},{"type":"narration","text":"风吹过草地，发出沙沙的声响。"},{"type":"dialogue","character":"ashley","text":"侦探先生。"},{"type":"char_expr","id":"ashley","expression":"thoughtful"},{"type":"dialogue","character":"ashley","text":"您离开的这三年……有没有想过白银之城？"},{"type":"dialogue","character":"detective","text":"……想过。"},{"type":"dialogue","character":"detective","text":"毕竟，这里是一切开始的地方。"},{"type":"dialogue","character":"ashley","text":"那您……后悔回来吗？"},{"type":"dialogue","character":"detective","text":"为什么这么问？"},{"type":"char_expr","id":"ashley","expression":"worried"},{"type":"dialogue","character":"ashley","text":"没什么……只是。"},{"type":"dialogue","character":"ashley","text":"我听说，三年前的事情……"},{"type":"dialogue","character":"ashley","text":"对您来说，是很痛苦的回忆。"},{"type":"narration","text":"她的声音很轻，像是怕惊扰了什么。"},{"type":"dialogue","character":"detective","text":"……确实。"},{"type":"dialogue","character":"detective","text":"但有些事情，总得回来面对。"},{"type":"char_expr","id":"ashley","expression":"determined"},{"type":"dialogue","character":"ashley","text":"……我明白了。"},{"type":"dialogue","character":"ashley","text":"不管怎么样，我都会帮您的。"},{"type":"dialogue","character":"afu","text":"阿芙也要帮！"},{"type":"char_expr","id":"afu","expression":"determined"},{"type":"dialogue","character":"afu","text":"虽然阿芙不知道发生了什么，但是侦探的事就是阿芙的事！"},{"type":"dialogue","character":"detective","text":"……你们两个。"},{"type":"narration","text":"我看着身边的两个人，心里有些复杂的情绪。"},{"type":"narration","text":"三年前，我是一个人离开的。"},{"type":"narration","text":"而现在……"},{"type":"narration","text":"好像也不是那么孤单了。"},{"type":"jump","target":"wild_picnic"}]},"wild_picnic":{"name":"野外线 · 野餐","script":[{"type":"bg","id":"wild_river"},{"type":"char_hide","id":"afu"},{"type":"char_hide","id":"ashley"},{"type":"wait","duration":500},{"type":"narration","text":"沿着小路走了没多久，一条清澈的小河出现在眼前。"},{"type":"narration","text":"河水在阳光下闪着银光，岸边的草地柔软而翠绿。"},{"type":"char_show","id":"afu","position":"left"},{"type":"char_show","id":"ashley","position":"right"},{"type":"char_expr","id":"afu","expression":"amazed"},{"type":"dialogue","character":"afu","text":"哇——！是水！"},{"type":"dialogue","character":"afu","text":"好多好多水！"},{"type":"dialogue","character":"detective","text":"……你没见过河吗？"},{"type":"dialogue","character":"afu","text":"阿芙只在书上见过！"},{"type":"dialogue","character":"afu","text":"原来水是这样流动的啊！好神奇！"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"这里的鱼很多。"},{"type":"dialogue","character":"ashley","text":"我带了钓竿……要不要试试？"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"钓鱼？！那是什么？！"},{"type":"dialogue","character":"detective","text":"就是……用鱼竿把鱼从水里钓上来。"},{"type":"dialogue","character":"afu","text":"把鱼钓上来？！鱼会愿意吗？"},{"type":"dialogue","character":"detective","text":"……不愿意也得上来。"},{"type":"dialogue","character":"afu","text":"好厉害！阿芙也要钓！"},{"type":"narration","text":"厄什栗从篮子里拿出三副钓竿，分给我们。"},{"type":"dialogue","character":"ashley","text":"我来教您怎么用吧，阿芙小姐。"},{"type":"dialogue","character":"afu","text":"好——！"},{"type":"narration","text":"厄什栗耐心地教阿芙装鱼饵、抛线、收线。"},{"type":"narration","text":"阿芙学得很认真，但总是急着拉杆，鱼都被吓跑了。"},{"type":"char_expr","id":"afu","expression":"confused"},{"type":"dialogue","character":"afu","text":"为什么鱼不上来啊……"},{"type":"dialogue","character":"afu","text":"阿芙都喊它了，它怎么不过来？"},{"type":"dialogue","character":"detective","text":"……鱼听不懂人话。"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"要耐心等，阿芙小姐。"},{"type":"dialogue","character":"ashley","text":"鱼很胆小的，你太急了它就不敢过来了。"},{"type":"dialogue","character":"afu","text":"哦……那阿芙慢慢等。"},{"type":"narration","text":"阿芙蹲在河边，眼睛一眨不眨地盯着水面。"},{"type":"narration","text":"阳光洒在她的脸上，银星花在发间微微晃动。"},{"type":"wait","duration":1000},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"动了！动了动了！"},{"type":"dialogue","character":"detective","text":"别急，慢慢拉——"},{"type":"dialogue","character":"afu","text":"哇啊啊啊——！"},{"type":"screen_shake"},{"type":"narration","text":"阿芙猛地往后一拉杆，一条银光闪闪的小鱼被甩了出来，正好落在她的头上。"},{"type":"char_expr","id":"afu","expression":"shocked"},{"type":"dialogue","character":"afu","text":"……鱼？"},{"type":"dialogue","character":"afu","text":"鱼在阿芙头上！"},{"type":"char_expr","id":"ashley","expression":"happy"},{"type":"dialogue","character":"ashley","text":"噗……"},{"type":"dialogue","character":"detective","text":"……"},{"type":"dialogue","character":"detective","text":"钓到了，恭喜。"},{"type":"dialogue","character":"afu","text":"耶——！阿芙钓到鱼了！"},{"type":"dialogue","character":"afu","text":"阿芙好厉害！"},{"type":"narration","text":"阿芙高兴得蹦蹦跳跳，头上的鱼啪嗒掉在了地上。"},{"type":"dialogue","character":"ashley","text":"好了好了，先把鱼放回去吧。"},{"type":"dialogue","character":"ashley","text":"这么小的鱼，还不够塞牙缝的。"},{"type":"dialogue","character":"afu","text":"诶？不能吃吗？"},{"type":"dialogue","character":"ashley","text":"我带了三明治和水果。"},{"type":"dialogue","character":"ashley","text":"我们……野餐吧。"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"野餐！就是在外面吃饭对不对？！"},{"type":"dialogue","character":"afu","text":"阿芙第一次野餐！"},{"type":"narration","text":"厄什栗在草地上铺了一块格子布，把篮子里的食物一样样摆出来。"},{"type":"narration","text":"三明治、水果、小饼干、还有一壶热茶。"},{"type":"char_expr","id":"afu","expression":"amazed"},{"type":"dialogue","character":"afu","text":"哇……好多好吃的！"},{"type":"dialogue","character":"afu","text":"都是厄什栗姐姐做的吗？"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"嗯……随便做的。"},{"type":"dialogue","character":"ashley","text":"不知道合不合您的口味，侦探先生。"},{"type":"dialogue","character":"detective","text":"……我不挑食。"},{"type":"narration","text":"我拿起一块三明治咬了一口。"},{"type":"narration","text":"面包松软，馅料新鲜，味道出乎意料地好。"},{"type":"dialogue","character":"detective","text":"……很好吃。"},{"type":"char_expr","id":"ashley","expression":"happy"},{"type":"dialogue","character":"ashley","text":"……真的吗？"},{"type":"dialogue","character":"ashley","text":"那就好。"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"阿芙也要吃！啊呜——"},{"type":"dialogue","character":"afu","text":"唔唔……好好吃！"},{"type":"dialogue","character":"afu","text":"厄什栗姐姐好厉害！什么都会！"},{"type":"dialogue","character":"ashley","text":"没有啦……只是会做些简单的东西。"},{"type":"narration","text":"三个人坐在草地上，一边吃一边聊。"},{"type":"narration","text":"风吹过河面，带来清凉的水汽。"},{"type":"narration","text":"阳光暖洋洋的，照得人有些犯困。"},{"type":"dialogue","character":"afu","text":"侦探侦探！"},{"type":"char_expr","id":"afu","expression":"happy"},{"type":"dialogue","character":"afu","text":"下次我们还来野餐好不好？"},{"type":"dialogue","character":"afu","text":"阿芙要学钓鱼！下次钓一条大大的鱼！"},{"type":"dialogue","character":"detective","text":"……好啊。"},{"type":"char_expr","id":"ashley","expression":"peaceful"},{"type":"dialogue","character":"ashley","text":"……真好啊。"},{"type":"dialogue","character":"ashley","text":"能这样……安安静静地吃饭，什么都不用想。"},{"type":"narration","text":"厄什栗望着远处的河面，眼神很温柔。"},{"type":"narration","text":"风把她的发丝轻轻吹起，在阳光下泛着柔和的光。"},{"type":"narration","text":"……"},{"type":"narration","text":"这样的日子，好像也不错。"},{"type":"jump","target":"wild_ending"}]},"wild_ending":{"name":"野外线 · 日落","script":[{"type":"bg","id":"wild_sunset"},{"type":"bgm","id":"bgm_world","volume":0.5,"fadeIn":1500},{"type":"narration","text":"不知不觉，太阳开始西沉。"},{"type":"narration","text":"金色的阳光洒在草地上，把一切都染成了温暖的颜色。"},{"type":"dialogue","character":"afu","text":"哇……太阳要回家了吗？"},{"type":"char_expr","id":"afu","expression":"amazed"},{"type":"dialogue","character":"afu","text":"好漂亮……阿芙第一次看到日落！"},{"type":"dialogue","character":"ashley","text":"是啊……很漂亮。"},{"type":"char_expr","id":"ashley","expression":"peaceful"},{"type":"dialogue","character":"ashley","text":"在白银之城里，很少能看到这样的景色。"},{"type":"dialogue","character":"ashley","text":"永远都是月光……有时候会忘了太阳是什么样子。"},{"type":"dialogue","character":"detective","text":"……"},{"type":"narration","text":"三个人并肩站着，望着远处的落日。"},{"type":"narration","text":"风轻轻吹过，带着青草和花香。"},{"type":"dialogue","character":"afu","text":"侦探！"},{"type":"char_expr","id":"afu","expression":"happy"},{"type":"dialogue","character":"afu","text":"下次我们还来玩好不好？"},{"type":"dialogue","character":"afu","text":"阿芙知道还有好多好多地方没去过！"},{"type":"dialogue","character":"detective","text":"……好啊。"},{"type":"dialogue","character":"ashley","text":"嗯，下次……我们可以带些吃的来野餐。"},{"type":"dialogue","character":"afu","text":"野餐！那是什么？！"},{"type":"dialogue","character":"ashley","text":"就是……在外面吃饭。"},{"type":"dialogue","character":"afu","text":"哇——！听起来好好玩！"},{"type":"narration","text":"阿芙兴奋地说着，厄什栗在一旁温柔地笑着。"},{"type":"narration","text":"日落的光，把两个人的影子拉得很长。"},{"type":"narration","text":"……"},{"type":"narration","text":"也许回来，也不是一件坏事。"},{"type":"wait","duration":1500},{"type":"bg","id":"black"},{"type":"narration","text":"—— 第一章 · 野外线 · 完 ——"},{"type":"end"}]},"town_start":{"name":"城镇线 · 出发","script":[{"type":"bgm","id":"bgm_daily3","volume":0.5,"fadeIn":1500},{"type":"dialogue","character":"detective","text":"在城里逛逛吧。"},{"type":"char_expr","id":"ashley","expression":"surprised"},{"type":"dialogue","character":"ashley","text":"……真的吗？"},{"type":"dialogue","character":"detective","text":"嗯。三年了，也该看看变成什么样了。"},{"type":"char_expr","id":"ashley","expression":"happy"},{"type":"dialogue","character":"ashley","text":"好……好的！"},{"type":"dialogue","character":"ashley","text":"那我来带路吧。我知道很多地方。"},{"type":"char_expr","id":"afu","expression":"confused"},{"type":"dialogue","character":"afu","text":"城里……有什么好玩的吗？"},{"type":"dialogue","character":"afu","text":"阿芙觉得城里的东西都看不懂……"},{"type":"dialogue","character":"ashley","text":"没关系的，阿芙小姐。"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"我可以给你们讲解。"},{"type":"dialogue","character":"ashley","text":"而且……城里也有很多好吃的。"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"好吃的？！"},{"type":"dialogue","character":"afu","text":"那阿芙也要去！"},{"type":"bg","id":"town_street"},{"type":"char_hide","id":"afu"},{"type":"char_hide","id":"ashley"},{"type":"wait","duration":500},{"type":"narration","text":"走出事务所，来到白银之城的街道上。"},{"type":"narration","text":"银白色的月光笼罩着整座城市，和三年前一样……又不一样。"},{"type":"char_show","id":"ashley","position":"center"},{"type":"char_show","id":"afu","position":"left"},{"type":"dialogue","character":"ashley","text":"您看，这条街……"},{"type":"char_expr","id":"ashley","expression":"thoughtful"},{"type":"dialogue","character":"ashley","text":"三年前这里还是一片老房子，现在都翻新了。"},{"type":"dialogue","character":"detective","text":"……变化确实很大。"},{"type":"dialogue","character":"detective","text":"我记得这里以前有个面包店来着。"},{"type":"dialogue","character":"ashley","text":"面包店搬到前面那条街去了。"},{"type":"dialogue","character":"ashley","text":"现在这里是一家钟表店。"},{"type":"dialogue","character":"ashley","text":"听说……是从外地来的工匠开的。"},{"type":"jump","target":"town_changes"}]},"town_changes":{"name":"城镇线 · 变化","script":[{"type":"narration","text":"我们沿着街道慢慢走，厄什栗一路给我介绍着这三年来的变化。"},{"type":"dialogue","character":"ashley","text":"前面那个广场，您还记得吗？"},{"type":"dialogue","character":"ashley","text":"以前那里有一座老喷泉……"},{"type":"dialogue","character":"detective","text":"嗯，我记得。"},{"type":"dialogue","character":"detective","text":"喷泉坏了很多年，一直没人修。"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"现在修好了。"},{"type":"dialogue","character":"ashley","text":"去年市政厅拨了款，把整个广场都翻新了一遍。"},{"type":"dialogue","character":"ashley","text":"晚上的时候，很多人会来这里散步。"},{"type":"dialogue","character":"detective","text":"……这样啊。"},{"type":"narration","text":"我望着远处的广场，心里有些复杂的感觉。"},{"type":"narration","text":"三年前我离开的时候，这里还是一片破败的样子。"},{"type":"narration","text":"现在……这座城市也在往前走啊。"},{"type":"char_expr","id":"afu","expression":"confused"},{"type":"dialogue","character":"afu","text":"那个……喷泉是什么？"},{"type":"dialogue","character":"ashley","text":"就是……会喷水的装置。"},{"type":"dialogue","character":"afu","text":"喷水？为什么要喷水？"},{"type":"dialogue","character":"ashley","text":"这个……因为好看吧。"},{"type":"dialogue","character":"afu","text":"哦——！阿芙想看！"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"我们快过去吧！"},{"type":"jump","target":"town_talk"}]},"town_talk":{"name":"城镇线 · 对话","script":[{"type":"narration","text":"我们在广场边的长椅上坐了下来。"},{"type":"narration","text":"阿芙跑到喷泉边去玩水了，留下我和厄什栗两个人。"},{"type":"dialogue","character":"ashley","text":"侦探先生。"},{"type":"char_expr","id":"ashley","expression":"thoughtful"},{"type":"dialogue","character":"ashley","text":"您觉得……白银之城的变化，怎么样？"},{"type":"dialogue","character":"detective","text":"……挺好的。"},{"type":"dialogue","character":"detective","text":"至少，比我离开的时候要好。"},{"type":"dialogue","character":"ashley","text":"是吗……那就好。"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"我还担心，您会觉得物是人非……"},{"type":"dialogue","character":"detective","text":"物是人非？"},{"type":"dialogue","character":"ashley","text":"就是……熟悉的地方都变了，会让人觉得难过。"},{"type":"dialogue","character":"detective","text":"……不会。"},{"type":"dialogue","character":"detective","text":"有些东西变了是好事。"},{"type":"dialogue","character":"detective","text":"一直停在原地，才更让人难受。"},{"type":"char_expr","id":"ashley","expression":"surprised"},{"type":"dialogue","character":"ashley","text":"……"},{"type":"dialogue","character":"ashley","text":"您说得对。"},{"type":"dialogue","character":"ashley","text":"一直停在原地……确实不好。"},{"type":"narration","text":"她低下头，声音有些轻。"},{"type":"narration","text":"不知道为什么，我总觉得她的话里，好像有别的意思。"},{"type":"dialogue","character":"detective","text":"厄什栗。"},{"type":"dialogue","character":"ashley","text":"是？"},{"type":"dialogue","character":"detective","text":"你……为什么要做我的助手？"},{"type":"char_expr","id":"ashley","expression":"surprised"},{"type":"dialogue","character":"ashley","text":"我……"},{"type":"dialogue","character":"ashley","text":"因为我想帮您。"},{"type":"dialogue","character":"detective","text":"只是这样？"},{"type":"char_expr","id":"ashley","expression":"worried"},{"type":"dialogue","character":"ashley","text":"……"},{"type":"dialogue","character":"ashley","text":"侦探先生，您是不是……觉得我有什么目的？"},{"type":"dialogue","character":"detective","text":"我只是好奇。"},{"type":"dialogue","character":"detective","text":"以你的能力，应该有更好的选择。"},{"type":"dialogue","character":"ashley","text":"……"},{"type":"char_expr","id":"ashley","expression":"determined"},{"type":"dialogue","character":"ashley","text":"有些事情，只有在您身边，才能做到。"},{"type":"dialogue","character":"ashley","text":"请您相信我，侦探先生。"},{"type":"dialogue","character":"ashley","text":"我……不会害您的。"},{"type":"narration","text":"她的眼神很认真，带着一种近乎执着的坚定。"},{"type":"narration","text":"……"},{"type":"dialogue","character":"detective","text":"我知道。"},{"type":"dialogue","character":"detective","text":"从你把三年的旧案整理得那么清楚的时候，我就知道了。"},{"type":"char_expr","id":"ashley","expression":"surprised"},{"type":"dialogue","character":"ashley","text":"侦探先生……"},{"type":"dialogue","character":"detective","text":"你有你的秘密，我不追问。"},{"type":"dialogue","character":"detective","text":"只要你是真心想帮忙，那就够了。"},{"type":"char_expr","id":"ashley","expression":"happy"},{"type":"dialogue","character":"ashley","text":"……谢谢您。"},{"type":"jump","target":"town_shopping"}]},"town_shopping":{"name":"城镇线 · 逛街","script":[{"type":"bg","id":"town_cafe"},{"type":"bgm","id":"bgm_bar","volume":0.5,"fadeIn":1500},{"type":"char_hide","id":"afu"},{"type":"char_hide","id":"ashley"},{"type":"wait","duration":500},{"type":"narration","text":"广场旁边，有一家新开的咖啡厅。"},{"type":"narration","text":"玻璃橱窗擦得锃亮，里面摆着精致的瓷杯和银质的茶具。"},{"type":"char_show","id":"ashley","position":"center"},{"type":"char_show","id":"afu","position":"left"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"这家店……是去年新开的。"},{"type":"dialogue","character":"ashley","text":"听说茶点做得很好。"},{"type":"dialogue","character":"ashley","text":"要不要……进去坐坐？"},{"type":"char_expr","id":"afu","expression":"confused"},{"type":"dialogue","character":"afu","text":"咖啡厅？那是什么？"},{"type":"dialogue","character":"detective","text":"就是……喝茶吃点心的地方。"},{"type":"dialogue","character":"afu","text":"喝茶？为什么要专门去店里喝？"},{"type":"char_expr","id":"ashley","expression":"happy"},{"type":"dialogue","character":"ashley","text":"因为……这是一种仪式。"},{"type":"dialogue","character":"ashley","text":"维多利亚时代的淑女们，下午四点钟都会停下手中的工作，享用下午茶。"},{"type":"dialogue","character":"ashley","text":"这是一天中最放松的时刻。"},{"type":"dialogue","character":"afu","text":"仪式？！听起来好厉害！"},{"type":"dialogue","character":"afu","text":"阿芙也要参加仪式！"},{"type":"narration","text":"我们推开玻璃门走了进去。"},{"type":"narration","text":"店里弥漫着红茶和奶油的香气，悠扬的钢琴声从角落里传来。"},{"type":"narration","text":"穿着制服的侍者把我们领到靠窗的位置。"},{"type":"char_expr","id":"afu","expression":"amazed"},{"type":"dialogue","character":"afu","text":"哇……好漂亮的杯子！"},{"type":"dialogue","character":"afu","text":"还有银色的勺子！"},{"type":"dialogue","character":"ashley","text":"这是骨瓷的茶具，很易碎的。"},{"type":"dialogue","character":"ashley","text":"阿芙小姐，拿的时候要小心哦。"},{"type":"dialogue","character":"afu","text":"骨瓷？是用骨头做的吗？！"},{"type":"dialogue","character":"detective","text":"……只是名字而已。"},{"type":"narration","text":"侍者端来了三层架的茶点。"},{"type":"narration","text":"最下面是三明治，中间是司康饼，最上面是小蛋糕和水果塔。"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"好多好多好吃的！"},{"type":"dialogue","character":"afu","text":"从哪一层开始吃？"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"从最下面开始。"},{"type":"dialogue","character":"ashley","text":"先吃咸的，再吃甜的。"},{"type":"dialogue","character":"ashley","text":"司康饼要掰开，涂上凝脂奶油和草莓酱。"},{"type":"dialogue","character":"afu","text":"凝脂奶油？那是什么？"},{"type":"dialogue","character":"ashley","text":"就是……很浓很浓的奶油。"},{"type":"dialogue","character":"ashley","text":"来，我教您。"},{"type":"narration","text":"厄什栗拿起一块司康饼，轻轻掰开。"},{"type":"narration","text":"她用银质的小刀，在司康饼上涂上厚厚的奶油，再抹上一层红色的果酱。"},{"type":"dialogue","character":"ashley","text":"好了，尝尝看。"},{"type":"dialogue","character":"afu","text":"啊呜——"},{"type":"char_expr","id":"afu","expression":"happy"},{"type":"dialogue","character":"afu","text":"唔唔……好好吃！"},{"type":"dialogue","character":"afu","text":"软软的！甜甜的！还有奶油的味道！"},{"type":"dialogue","character":"detective","text":"……慢点吃，没人跟你抢。"},{"type":"dialogue","character":"ashley","text":"呵呵……"},{"type":"char_expr","id":"ashley","expression":"peaceful"},{"type":"dialogue","character":"ashley","text":"……真好啊。"},{"type":"dialogue","character":"ashley","text":"能这样……安安静静地喝下午茶。"},{"type":"narration","text":"厄什栗端起茶杯，轻轻抿了一口。"},{"type":"narration","text":"阳光透过玻璃窗洒在她的脸上，让她看起来格外温柔。"},{"type":"narration","text":"……"},{"type":"narration","text":"这样的时光，好像也不错。"},{"type":"bg","id":"town_flower"},{"type":"char_hide","id":"afu"},{"type":"char_hide","id":"ashley"},{"type":"wait","duration":500},{"type":"narration","text":"喝完下午茶，我们沿着街道继续往前走。"},{"type":"narration","text":"路过一家花店，门口摆满了五颜六色的花朵。"},{"type":"char_show","id":"ashley","position":"center"},{"type":"char_show","id":"afu","position":"left"},{"type":"char_expr","id":"afu","expression":"amazed"},{"type":"dialogue","character":"afu","text":"哇——好多花！"},{"type":"dialogue","character":"afu","text":"好香啊！"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"这家花店……很有名的。"},{"type":"dialogue","character":"ashley","text":"据说店主是从伦蒂尼亚来的花匠。"},{"type":"dialogue","character":"detective","text":"……你对花很了解？"},{"type":"dialogue","character":"ashley","text":"……一点点吧。"},{"type":"char_expr","id":"ashley","expression":"thoughtful"},{"type":"dialogue","character":"ashley","text":"维多利亚时代的淑女，都要懂一些花艺的。"},{"type":"dialogue","character":"ashley","text":"每一种花都有它的花语，送错了花，可是会闹笑话的。"},{"type":"dialogue","character":"afu","text":"花语？花会说话吗？！"},{"type":"dialogue","character":"ashley","text":"不是真的说话……是一种象征。"},{"type":"dialogue","character":"ashley","text":"比如，红玫瑰代表爱情，白玫瑰代表纯洁。"},{"type":"dialogue","character":"ashley","text":"薰衣草代表等待，雏菊代表纯真。"},{"type":"dialogue","character":"afu","text":"哇……花好厉害！"},{"type":"dialogue","character":"afu","text":"那……有没有代表开心的花？"},{"type":"char_expr","id":"ashley","expression":"happy"},{"type":"dialogue","character":"ashley","text":"有啊。"},{"type":"dialogue","character":"ashley","text":"向日葵代表阳光和快乐，满天星代表喜悦和幸福。"},{"type":"dialogue","character":"ashley","text":"还有……银莲花，代表希望和期待。"},{"type":"dialogue","character":"afu","text":"银莲花？是银色的吗？"},{"type":"dialogue","character":"ashley","text":"嗯……有白色的，也有淡紫色的。"},{"type":"dialogue","character":"ashley","text":"花瓣很薄，在月光下会泛着银色的光。"},{"type":"dialogue","character":"afu","text":"哇……听起来好好看！"},{"type":"dialogue","character":"afu","text":"阿芙要买一朵！"},{"type":"narration","text":"阿芙跑进花店里，东看看西看看。"},{"type":"narration","text":"最后，她选了一朵淡紫色的银莲花。"},{"type":"char_expr","id":"afu","expression":"happy"},{"type":"dialogue","character":"afu","text":"侦探侦探！你看！"},{"type":"dialogue","character":"afu","text":"阿芙选了这个！"},{"type":"dialogue","character":"detective","text":"……很好看。"},{"type":"char_expr","id":"ashley","expression":"gentle"},{"type":"dialogue","character":"ashley","text":"很适合你，阿芙小姐。"},{"type":"dialogue","character":"afu","text":"嘿嘿~"},{"type":"narration","text":"阿芙把花别在胸前，蹦蹦跳跳地走在前面。"},{"type":"narration","text":"厄什栗走在我身边，脚步很轻。"},{"type":"narration","text":"风吹过街道，带来淡淡的花香。"},{"type":"jump","target":"town_ending"}]},"town_ending":{"name":"城镇线 · 月光下","script":[{"type":"bgm","id":"bgm_world","volume":0.5,"fadeIn":1500},{"type":"dialogue","character":"afu","text":"侦探——！厄什栗姐姐——！"},{"type":"char_expr","id":"afu","expression":"excited"},{"type":"dialogue","character":"afu","text":"快来看！喷泉的水好凉！"},{"type":"dialogue","character":"detective","text":"别玩太久，会感冒的。"},{"type":"dialogue","character":"afu","text":"没关系啦！阿芙身体很好的！"},{"type":"narration","text":"阿芙在喷泉边跑来跑去，银白色的水花在月光下闪闪发光。"},{"type":"narration","text":"厄什栗坐在我身边，安静地看着她。"},{"type":"dialogue","character":"ashley","text":"……真好啊。"},{"type":"char_expr","id":"ashley","expression":"peaceful"},{"type":"dialogue","character":"ashley","text":"能这样……安安静静地坐着，什么都不用想。"},{"type":"dialogue","character":"detective","text":"你平时很忙吗？"},{"type":"dialogue","character":"ashley","text":"嗯……也不是忙。"},{"type":"dialogue","character":"ashley","text":"只是，很少有这样……放松的时候。"},{"type":"narration","text":"她望着远处的月光，眼神有些悠远。"},{"type":"narration","text":"银白色的光洒在她的脸上，让她看起来有些不真实。"},{"type":"narration","text":"……"},{"type":"narration","text":"三年了。"},{"type":"narration","text":"这座城市变了很多，人也变了很多。"},{"type":"narration","text":"但有些东西……好像还和以前一样。"},{"type":"narration","text":"比如这永远不会变的银白色月光。"},{"type":"narration","text":"又比如……"},{"type":"narration","text":"我想要追寻的答案。"},{"type":"dialogue","character":"ashley","text":"侦探先生？"},{"type":"dialogue","character":"detective","text":"……没什么。"},{"type":"dialogue","character":"detective","text":"走吧，该回去了。"},{"type":"dialogue","character":"ashley","text":"嗯。"},{"type":"narration","text":"我们站起身，朝着阿芙的方向走去。"},{"type":"narration","text":"月光把三个人的影子，拉得很长很长。"},{"type":"narration","text":"……"},{"type":"narration","text":"新的故事，才刚刚开始。"},{"type":"wait","duration":1500},{"type":"bg","id":"black"},{"type":"narration","text":"—— 第一章 · 城镇线 · 完 ——"},{"type":"end"}]}},"title":"白银之城 · 事务所的清晨","start_scene":"prologue"};
+  </script>
+  <script>
+/**
+ * ========================================
+ *  白银之城 · 视觉小说引擎核心
+ *  Silver City Visual Novel Engine
+ * ========================================
+ *
+ *  负责: 状态管理、脚本解析执行、场景跳转、变量系统
+ */
+
+const VN = (function() {
+  'use strict';
+
+  // ==================== 内部状态 ====================
+  const _state = {
+    currentSceneId: null,
+    currentLineIndex: 0,
+    isPlaying: false,
+    isWaiting: false,
+    autoMode: false,
+    textSpeed: 40,
+    flags: {},
+    variables: {},
+    history: [],
+    charactersOnScreen: {},
+    currentBg: null,
+    currentBgm: null
+  };
+
+  let _scriptData = null;
+  let _configData = null;
+  let _onStateChange = null;
+
+  // ==================== 加载 ====================
+
+  async function loadScript() {
+    try {
+      const resp = await fetch('data/script.json?t=' + Date.now());
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      _scriptData = await resp.json();
+      console.log('[VN引擎] 剧本加载完成:', _scriptData.title);
+      return true;
+    } catch (e) {
+      console.error('[VN引擎] 剧本加载失败:', e.message);
+      return false;
+    }
+  }
+
+  async function loadConfig() {
+    try {
+      const resp = await fetch('data/config.json?t=' + Date.now());
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      _configData = await resp.json();
+      console.log('[VN引擎] 配置加载完成');
+      return true;
+    } catch (e) {
+      console.error('[VN引擎] 配置加载失败:', e.message);
+      console.error('[提示] 请确保通过 http://localhost:8080 访问（而非双击打开HTML文件）');
+      return false;
+    }
+  }
+
+  // ==================== 状态访问 ====================
+
+  function getState() { return _state; }
+  function getScript() { return _scriptData; }
+  function getConfig() { return _configData; }
+  function getCurrentScene() {
+    if (!_scriptData || !_state.currentSceneId) return null;
+    return _scriptData.scenes[_state.currentSceneId] || null;
+  }
+  function getCurrentLine() {
+    const scene = getCurrentScene();
+    if (!scene || _state.currentLineIndex >= scene.script.length) return null;
+    return scene.script[_state.currentLineIndex];
+  }
+
+  // ==================== 角色/资源查询 ====================
+
+  function getCharacter(charId) {
+    if (!_configData) return null;
+    return _configData.characters[charId] || null;
+  }
+
+  function getBackground(bgId) {
+    if (!_configData) return null;
+    return _configData.backgrounds[bgId] || null;
+  }
+
+  function getMusic(musicId) {
+    if (!_configData) return null;
+    return _configData.music[musicId] || null;
+  }
+
+  function getSfx(sfxId) {
+    if (!_configData) return null;
+    return _configData.sfx[sfxId] || null;
+  }
+
+  // ==================== 脚本执行 ====================
+
+  function startGame(sceneId) {
+    var id = sceneId;
+    if (!id && _scriptData && _scriptData.start_scene) {
+      id = _scriptData.start_scene;
+    }
+    if (!id && _configData && _configData.game && _configData.game.start_scene) {
+      id = _configData.game.start_scene;
+    }
+    if (!id) {
+      console.error('[VN引擎] 无法开始: 没有指定起始场景');
+      return;
+    }
+    _state.currentSceneId = id;
+    _state.currentLineIndex = 0;
+    _state.isPlaying = true;
+    _state.isWaiting = false;
+    _state.history = [];
+    _state.charactersOnScreen = {};
+    saveSnapshot();
+    executeCurrentLine();
+  }
+
+  function executeCurrentLine() {
+    const line = getCurrentLine();
+    if (!line) {
+      console.log('[VN引擎] 场景结束:', _state.currentSceneId);
+      _notifyState('scene_end');
+      return;
+    }
+    executeCommand(line);
+  }
+
+  function executeCommand(cmd) {
+    if (!cmd || !cmd.type) return;
+
+    switch (cmd.type) {
+
+      // ---- 对话 ----
+      case 'dialogue':
+        _notifyState('dialogue', {
+          character: cmd.character || '',
+          text: cmd.text || '',
+          expression: cmd.expression || null,
+          waitForClick: true
+        });
+        break;
+
+      // ---- 旁白 ----
+      case 'narration':
+        _notifyState('narration', {
+          text: cmd.text || '',
+          waitForClick: true
+        });
+        break;
+
+      // ---- 分支选择 ----
+      case 'choice':
+        _state.isWaiting = true;
+        _notifyState('choice', {
+          prompt: cmd.prompt || '选择',
+          options: cmd.options || []
+        });
+        break;
+
+      // ---- 背景 ----
+      case 'bg':
+        _state.currentBg = cmd.id;
+        _notifyState('bg_change', {
+          id: cmd.id,
+          transition: cmd.transition || 'fade'
+        });
+        advanceLine();
+        break;
+
+      // ---- 角色立绘 ----
+      case 'char_show':
+        _state.charactersOnScreen[cmd.id] = {
+          position: cmd.position || 'center',
+          expression: cmd.expression || 'default'
+        };
+        _notifyState('char_show', {
+          id: cmd.id,
+          position: cmd.position || 'center',
+          expression: cmd.expression || 'default',
+          transition: cmd.transition || 'fade'
+        });
+        advanceLine();
+        break;
+
+      case 'char_hide':
+        delete _state.charactersOnScreen[cmd.id];
+        _notifyState('char_hide', {
+          id: cmd.id,
+          transition: cmd.transition || 'fade'
+        });
+        advanceLine();
+        break;
+
+      case 'char_expr':
+        if (_state.charactersOnScreen[cmd.id]) {
+          _state.charactersOnScreen[cmd.id].expression = cmd.expression || 'default';
+        }
+        _notifyState('char_expr', {
+          id: cmd.id,
+          expression: cmd.expression || 'default'
+        });
+        advanceLine();
+        break;
+
+      case 'char_move':
+        if (_state.charactersOnScreen[cmd.id]) {
+          _state.charactersOnScreen[cmd.id].position = cmd.position || 'center';
+        }
+        _notifyState('char_move', {
+          id: cmd.id,
+          position: cmd.position || 'center',
+          duration: cmd.duration || 500
+        });
+        advanceLine();
+        break;
+
+      // ---- 音乐 ----
+      case 'bgm':
+        _state.currentBgm = cmd.id;
+        _notifyState('bgm', {
+          id: cmd.id,
+          volume: cmd.volume != null ? cmd.volume : 0.7,
+          fadeIn: cmd.fadeIn || 1000
+        });
+        advanceLine();
+        break;
+
+      case 'bgm_stop':
+        _state.currentBgm = null;
+        _notifyState('bgm_stop', { fadeOut: cmd.fadeOut || 1000 });
+        advanceLine();
+        break;
+
+      // ---- 音效 ----
+      case 'sfx':
+        _notifyState('sfx', { id: cmd.id, volume: cmd.volume != null ? cmd.volume : 0.8 });
+        advanceLine();
+        break;
+
+      // ---- 场景跳转 ----
+      case 'jump':
+        _state.currentSceneId = cmd.target;
+        _state.currentLineIndex = 0;
+        saveSnapshot();
+        executeCurrentLine();
+        break;
+
+      // ---- 变量操作 ----
+      case 'flag_set':
+        _state.flags[cmd.name] = cmd.value;
+        advanceLine();
+        break;
+
+      case 'flag_check':
+        const flagVal = _state.flags[cmd.name];
+        let matched = false;
+        if (cmd.is === true && flagVal === true) matched = true;
+        if (cmd.is === false && flagVal !== true) matched = true;
+        if (cmd.equals !== undefined && flagVal === cmd.equals) matched = true;
+        if (matched) {
+          if (cmd.jump) {
+            _state.currentSceneId = cmd.jump;
+            _state.currentLineIndex = 0;
+            saveSnapshot();
+            executeCurrentLine();
+            return;
+          }
+        }
+        advanceLine();
+        break;
+
+      // ---- 等待 ----
+      case 'wait':
+        _state.isWaiting = true;
+        setTimeout(function() {
+          _state.isWaiting = false;
+          advanceLine();
+        }, cmd.duration || 1000);
+        break;
+
+      // ---- 屏幕效果 ----
+      case 'screen_shake':
+        _notifyState('screen_shake', {
+          intensity: cmd.intensity || 5,
+          duration: cmd.duration || 500
+        });
+        advanceLine();
+        break;
+
+      case 'flash':
+        _notifyState('flash', {
+          color: cmd.color || '#FFFFFF',
+          duration: cmd.duration || 300
+        });
+        advanceLine();
+        break;
+
+      // ---- 结束 ----
+      case 'end':
+        _state.isPlaying = false;
+        _notifyState('end', { message: cmd.message || '—— 未完待续 ——' });
+        break;
+
+      case 'title':
+        _state.isPlaying = false;
+        _notifyState('title');
+        break;
+
+      // ---- 注释 ----
+      case 'comment':
+        advanceLine();
+        break;
+
+      default:
+        console.warn('[VN引擎] 未知命令类型:', cmd.type);
+        advanceLine();
+    }
+  }
+
+  function advanceLine() {
+    if (_state.isWaiting) return;
+    _state.currentLineIndex++;
+    if (_state.autoMode && _state.isPlaying) {
+      setTimeout(function() {
+        executeCurrentLine();
+      }, (_configData && _configData.game ? _configData.game.auto_mode_delay : 3000));
+    } else {
+      executeCurrentLine();
+    }
+  }
+
+  function handleChoice(choiceIndex) {
+    const line = getCurrentLine();
+    if (!line || line.type !== 'choice') return;
+    const option = line.options[choiceIndex];
+    if (!option) return;
+
+    _state.isWaiting = false;
+
+    // 记录选择历史
+    _state.history.push({
+      scene: _state.currentSceneId,
+      line: _state.currentLineIndex,
+      choice: option.text
+    });
+
+    // 先执行选项附带的效果
+    if (option.flag_set) {
+      _state.flags[option.flag_set] = option.value !== undefined ? option.value : true;
+    }
+    if (option.var_set) {
+      _state.variables[option.var_set] = option.value || 0;
+    }
+
+    // 跳转
+    if (option.jump) {
+      _state.currentSceneId = option.jump;
+      _state.currentLineIndex = 0;
+      saveSnapshot();
+      _notifyState('choice_made', { choice: option.text });
+      executeCurrentLine();
+    } else if (option.next) {
+      _state.currentLineIndex++;
+      saveSnapshot();
+      _notifyState('choice_made', { choice: option.text });
+      executeCurrentLine();
+    } else {
+      _state.currentLineIndex++;
+      executeCurrentLine();
+    }
+  }
+
+  function handleClick() {
+    if (!_state.isPlaying) return;
+    if (_state.isWaiting) return;
+    advanceLine();
+  }
+
+  // ==================== 变量系统 ====================
+
+  function setFlag(name, value) { _state.flags[name] = value; }
+  function getFlag(name) { return _state.flags[name]; }
+  function setVar(name, value) { _state.variables[name] = value; }
+  function getVar(name) { return _state.variables[name]; }
+
+  // ==================== 设置 ====================
+
+  function setTextSpeed(speed) {
+    _state.textSpeed = Math.max(1, Math.min(100, speed));
+  }
+
+  function setAutoMode(enabled) {
+    _state.autoMode = enabled;
+  }
+
+  // ==================== 存档快照 ====================
+
+  function saveSnapshot() {
+    if (typeof VNSave !== 'undefined') {
+      VNSave.saveAuto(getSaveSnapshot());
+    }
+  }
+
+  function getSaveSnapshot() {
+    return {
+      sceneId: _state.currentSceneId,
+      lineIndex: _state.currentLineIndex,
+      flags: JSON.parse(JSON.stringify(_state.flags)),
+      variables: JSON.parse(JSON.stringify(_state.variables)),
+      charactersOnScreen: JSON.parse(JSON.stringify(_state.charactersOnScreen)),
+      currentBg: _state.currentBg,
+      currentBgm: _state.currentBgm,
+      history: _state.history.slice(-50),
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function restoreSnapshot(snapshot) {
+    _state.currentSceneId = snapshot.sceneId;
+    _state.currentLineIndex = snapshot.lineIndex;
+    _state.flags = JSON.parse(JSON.stringify(snapshot.flags || {}));
+    _state.variables = JSON.parse(JSON.stringify(snapshot.variables || {}));
+    _state.charactersOnScreen = JSON.parse(JSON.stringify(snapshot.charactersOnScreen || {}));
+    _state.currentBg = snapshot.currentBg;
+    _state.currentBgm = snapshot.currentBgm;
+    _state.history = snapshot.history || [];
+    _state.isPlaying = true;
+    _state.isWaiting = false;
+  }
+
+  // ==================== 事件通知 ====================
+
+  function onStateChange(callback) {
+    _onStateChange = callback;
+  }
+
+  function _notifyState(event, data) {
+    if (_onStateChange) {
+      _onStateChange(event, data);
+    }
+  }
+
+  // ==================== 公开 API ====================
+
+  return {
+    // 初始化
+    loadScript: loadScript,
+    loadConfig: loadConfig,
+
+    // 状态
+    getState: getState,
+    getScript: getScript,
+    getConfig: getConfig,
+    getCurrentScene: getCurrentScene,
+    getCurrentLine: getCurrentLine,
+
+    // 查询
+    getCharacter: getCharacter,
+    getBackground: getBackground,
+    getMusic: getMusic,
+    getSfx: getSfx,
+
+    // 游戏控制
+    startGame: startGame,
+    handleClick: handleClick,
+    handleChoice: handleChoice,
+    executeCurrentLine: executeCurrentLine,
+    advanceLine: advanceLine,
+
+    // 变量
+    setFlag: setFlag,
+    getFlag: getFlag,
+    setVar: setVar,
+    getVar: getVar,
+
+    // 设置
+    setTextSpeed: setTextSpeed,
+    setAutoMode: setAutoMode,
+
+    // 存档
+    getSaveSnapshot: getSaveSnapshot,
+    restoreSnapshot: restoreSnapshot,
+
+    // 事件
+    onStateChange: onStateChange
+  };
+
+})();
+
+  </script>
+  <script>
+/**
+ * ========================================
+ *  白银之城 · 渲染器
+ *  Silver City VN - Renderer
+ * ========================================
+ *
+ *  负责: 文本显示(打字机)、角色立绘/占位、背景/占位、选择UI、特效
+ *  当素材图片不存在时，自动降级为带颜色的文字占位符
+ */
+
+const VNRenderer = (function() {
+  'use strict';
+
+  // ==================== 背景占位配色 ====================
+  var _bgPalette = {
+    'black':        { color: '#050508', labelColor: '#333' },
+    'bedroom':      { color: '#1a1620', labelColor: '#8b7355', glow: 'rgba(180,140,100,0.15)' },
+    'staircase':    { color: '#181c24', labelColor: '#7b8ca0', glow: 'rgba(120,140,160,0.12)' },
+    'wild_path':    { color: '#141e16', labelColor: '#6b9b6b', glow: 'rgba(100,160,100,0.12)' },
+    'wild_river':   { color: '#101c22', labelColor: '#5b9bae', glow: 'rgba(80,150,170,0.12)' },
+    'wild_sunset':  { color: '#1c1410', labelColor: '#c87848', glow: 'rgba(200,120,70,0.15)' },
+    'town_street':  { color: '#18181e', labelColor: '#a0a0b8', glow: 'rgba(160,160,190,0.12)' },
+    'town_cafe':    { color: '#1a1612', labelColor: '#b8956e', glow: 'rgba(180,150,110,0.15)' },
+    'town_flower':  { color: '#181420', labelColor: '#b08ab8', glow: 'rgba(170,140,190,0.15)' },
+    'silver_city_night': { color: '#0a0c18', labelColor: '#8090c0', glow: 'rgba(120,140,200,0.15)' },
+    'dark_alley':   { color: '#0c0a0c', labelColor: '#666', glow: 'rgba(100,100,110,0.1)' },
+    'moonlit_garden':{ color: '#101820', labelColor: '#90a8c8', glow: 'rgba(140,170,210,0.15)' }
+  };
+
+  function _getBgPalette(bgId) {
+    return _bgPalette[bgId] || { color: '#0a0a0f', labelColor: '#555', glow: 'rgba(80,80,90,0.1)' };
+  }
+
+  // ==================== DOM 引用 ====================
+  var _els = {};
+
+  function init() {
+    _els = {
+      gameContainer:   document.getElementById('game-container'),
+      bgLayer:         document.getElementById('bg-layer'),
+      charLayer:       document.getElementById('char-layer'),
+      textBox:         document.getElementById('text-box'),
+      nameTag:         document.getElementById('name-tag'),
+      dialogueText:    document.getElementById('dialogue-text'),
+      choiceContainer: document.getElementById('choice-container'),
+      clickIndicator:  document.getElementById('click-indicator'),
+      overlay:         document.getElementById('overlay'),
+      titleScreen:     document.getElementById('title-screen'),
+      menuPanel:       document.getElementById('menu-panel'),
+      settingsPanel:   document.getElementById('settings-panel'),
+      saveLoadPanel:   document.getElementById('save-load-panel'),
+      endingScreen:    document.getElementById('ending-screen'),
+      endingText:      document.getElementById('ending-text')
+    };
+  }
+
+  // ==================== 文本显示 ====================
+
+  var _typewriterTimer = null;
+  var _typewriterResolve = null;
+
+  function showDialogue(character, text, charConfig, speed, waitForClick) {
+    clearTypewriter();
+
+    // 设置名字标签
+    if (character) {
+      _els.nameTag.textContent = character;
+      _els.nameTag.style.display = 'block';
+      if (charConfig && charConfig.color) {
+        _els.nameTag.style.color = charConfig.color;
+        _els.nameTag.style.borderColor = charConfig.color;
+      } else {
+        _els.nameTag.style.color = '#8B9DC3';
+        _els.nameTag.style.borderColor = 'rgba(192,192,220,0.15)';
+      }
+    } else {
+      _els.nameTag.style.display = 'none';
+    }
+
+    _els.textBox.classList.add('visible');
+    _els.dialogueText.textContent = '';
+    hideChoices();
+    hideClickIndicator();
+
+    return typewrite(text, speed, waitForClick);
+  }
+
+  function showNarration(text, speed, waitForClick) {
+    clearTypewriter();
+    _els.nameTag.style.display = 'none';
+    _els.textBox.classList.add('visible');
+    _els.dialogueText.textContent = '';
+    hideChoices();
+    hideClickIndicator();
+    return typewrite(text, speed, waitForClick);
+  }
+
+  function typewrite(text, speed, waitForClick) {
+    return new Promise(function(resolve) {
+      var chars = Array.from(text);
+      var index = 0;
+      var baseDelay = Math.max(10, 110 - speed);
+
+      _typewriterTimer = setInterval(function() {
+        if (index < chars.length) {
+          _els.dialogueText.textContent += chars[index];
+          index++;
+        } else {
+          clearTypewriter();
+          if (waitForClick) {
+            showClickIndicator();
+          }
+          _typewriterResolve = null;
+          resolve();
+        }
+      }, baseDelay);
+
+      _typewriterResolve = resolve;
+    });
+  }
+
+  function skipTypewriter() {
+    if (_typewriterTimer) {
+      clearInterval(_typewriterTimer);
+      _typewriterTimer = null;
+      var line = VN.getCurrentLine();
+      if (line && (line.type === 'dialogue' || line.type === 'narration')) {
+        _els.dialogueText.textContent = line.text || '';
+      }
+      if (_typewriterResolve) {
+        var r = _typewriterResolve;
+        _typewriterResolve = null;
+        r();
+      }
+    }
+  }
+
+  function isTyping() {
+    return _typewriterTimer !== null;
+  }
+
+  function clearTypewriter() {
+    if (_typewriterTimer) {
+      clearInterval(_typewriterTimer);
+      _typewriterTimer = null;
+    }
+    _typewriterResolve = null;
+  }
+
+  function showClickIndicator() {
+    _els.clickIndicator.classList.add('visible');
+  }
+
+  function hideClickIndicator() {
+    _els.clickIndicator.classList.remove('visible');
+  }
+
+  // ==================== 背景 ====================
+
+  function setBackground(bgId, config, transition) {
+    var bgData = config ? config.backgrounds[bgId] : null;
+    var currentBg = _els.bgLayer.querySelector('.bg-image.active');
+
+    // 尝试加载真实图片
+    var loaded = false;
+    if (bgData && bgData.file) {
+      var imgPath = 'assets/backgrounds/' + bgData.file;
+      var newBg = document.createElement('div');
+      newBg.className = 'bg-image';
+      newBg.style.backgroundImage = 'url(' + imgPath + ')';
+
+      // 尝试预加载
+      var testImg = new Image();
+      testImg.onload = function() {
+        // 图片存在，使用真实图片
+        if (transition === 'fade') {
+          newBg.classList.add('fade-in');
+        }
+        _els.bgLayer.appendChild(newBg);
+        void newBg.offsetWidth;
+        newBg.classList.add('active');
+        if (currentBg) {
+          setTimeout(function() {
+            if (currentBg.parentNode) currentBg.parentNode.removeChild(currentBg);
+          }, 600);
+        }
+        // 移除之前的占位背景
+        var placeholder = _els.bgLayer.querySelector('.bg-placeholder');
+        if (placeholder) placeholder.remove();
+      };
+      testImg.onerror = function() {
+        // 图片不存在，使用占位
+        _renderBgPlaceholder(bgId, transition, currentBg);
+      };
+      testImg.src = imgPath;
+      loaded = true;
+    }
+
+    if (!loaded) {
+      _renderBgPlaceholder(bgId, transition, currentBg);
+    }
+  }
+
+  function _renderBgPlaceholder(bgId, transition, currentBg) {
+    var palette = _getBgPalette(bgId);
+    var bgData = VN.getConfig() ? VN.getConfig().backgrounds[bgId] : null;
+    var label = bgData && bgData.desc ? bgData.desc : bgId;
+
+    // 移除旧占位
+    var old = _els.bgLayer.querySelector('.bg-placeholder');
+    if (old) old.remove();
+
+    var placeholder = document.createElement('div');
+    placeholder.className = 'bg-placeholder';
+    placeholder.setAttribute('data-bg', bgId);
+    placeholder.style.background = 'radial-gradient(ellipse at center, ' +
+      _lighten(palette.color, 0.2) + ' 0%, ' + palette.color + ' 70%)';
+
+    // 场景名标签
+    var labelEl = document.createElement('span');
+    labelEl.className = 'bg-placeholder-label';
+    labelEl.textContent = '「' + label + '」';
+    labelEl.style.color = palette.labelColor;
+    placeholder.appendChild(labelEl);
+
+    // 光晕
+    var glow = document.createElement('div');
+    glow.className = 'bg-placeholder-glow';
+    glow.style.boxShadow = '0 0 120px ' + palette.glow;
+    placeholder.appendChild(glow);
+
+    if (transition === 'fade') {
+      placeholder.style.animation = 'bgPlaceholderFadeIn 0.6s ease forwards';
+    }
+
+    _els.bgLayer.appendChild(placeholder);
+
+    // 移除旧背景
+    if (currentBg) {
+      setTimeout(function() {
+        if (currentBg.parentNode) currentBg.parentNode.removeChild(currentBg);
+      }, 600);
+    }
+  }
+
+  function _lighten(hex, factor) {
+    var r = parseInt(hex.slice(1,3), 16);
+    var g = parseInt(hex.slice(3,5), 16);
+    var b = parseInt(hex.slice(5,7), 16);
+    r = Math.min(255, Math.round(r + (255 - r) * factor));
+    g = Math.min(255, Math.round(g + (255 - g) * factor));
+    b = Math.min(255, Math.round(b + (255 - b) * factor));
+    return '#' + [r,g,b].map(function(c) {
+      return c.toString(16).padStart(2, '0');
+    }).join('');
+  }
+
+  // ==================== 角色立绘 / 占位符 ====================
+
+  function showCharacter(charId, position, expression, charConfig, transition) {
+    var charData = charConfig ? charConfig.characters[charId] : null;
+    if (!charData) return;
+
+    // 获取立绘文件名（兼容 sprites 和 expressions 两种键名）
+    var sprites = charData.sprites || charData.expressions;
+    var spriteFile = sprites && sprites[expression] ? sprites[expression] : null;
+
+    // 移除该角色的旧元素
+    var oldEl = _els.charLayer.querySelector('[data-char="' + charId + '"]');
+    if (oldEl) oldEl.remove();
+
+    if (spriteFile && typeof spriteFile === 'object') {
+      spriteFile = spriteFile.file || null;
+    }
+
+    // 尝试加载真实立绘
+    if (spriteFile) {
+      var imgPath = 'assets/characters/' + spriteFile;
+      _createSpriteElement(charId, position, expression, imgPath, charData, transition);
+    } else {
+      // 无素材 - 显示彩色占位符
+      _createPlaceholderElement(charId, position, expression, charData, transition);
+    }
+  }
+
+  function _createSpriteElement(charId, position, expression, imgPath, charData, transition) {
+    var charEl = document.createElement('div');
+    charEl.className = 'char-sprite';
+    charEl.setAttribute('data-char', charId);
+    charEl.style.backgroundImage = 'url(' + imgPath + ')';
+
+    var testImg = new Image();
+    testImg.onload = function() {
+      charEl.className = 'char-sprite position-' + position;
+      if (transition === 'fade') charEl.classList.add('fade-in');
+      _els.charLayer.appendChild(charEl);
+      void charEl.offsetWidth;
+      charEl.classList.add('active');
+    };
+    testImg.onerror = function() {
+      _createPlaceholderElement(charId, position, expression, charData, transition);
+    };
+    testImg.src = imgPath;
+  }
+
+  function _createPlaceholderElement(charId, position, expression, charData, transition) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'char-placeholder';
+    wrapper.setAttribute('data-char', charId);
+    wrapper.setAttribute('data-position', position);
+
+    var color = charData.color || '#666';
+    var name = charData.name || charId;
+
+    // 占位"立绘"框
+    var box = document.createElement('div');
+    box.className = 'char-placeholder-box';
+    box.style.borderColor = color;
+    box.style.background = 'linear-gradient(180deg, ' +
+      _alpha(color, 0.15) + ' 0%, ' +
+      _alpha(color, 0.05) + ' 50%, ' +
+      _alpha(color, 0.12) + ' 100%)';
+    box.style.boxShadow = '0 0 40px ' + _alpha(color, 0.2) + ', inset 0 0 60px ' + _alpha(color, 0.06);
+
+    // 名字
+    var nameEl = document.createElement('div');
+    nameEl.className = 'char-placeholder-name';
+    nameEl.textContent = name;
+    nameEl.style.color = color;
+    nameEl.style.textShadow = '0 0 16px ' + _alpha(color, 0.4);
+
+    // 表情描述
+    var exprLabel = _getExpressionLabel(expression);
+    var exprEl = document.createElement('div');
+    exprEl.className = 'char-placeholder-expression';
+    exprEl.textContent = exprLabel;
+    exprEl.style.color = _lighten(color, 0.3);
+
+    // 装饰线
+    var line = document.createElement('div');
+    line.className = 'char-placeholder-line';
+    line.style.background = 'linear-gradient(90deg, transparent, ' + color + ', transparent)';
+
+    box.appendChild(nameEl);
+    box.appendChild(line);
+    box.appendChild(exprEl);
+    wrapper.appendChild(box);
+
+    if (transition === 'fade') {
+      wrapper.classList.add('placeholder-fade-in');
+    }
+
+    _els.charLayer.appendChild(wrapper);
+    void wrapper.offsetWidth;
+    wrapper.classList.add('active');
+  }
+
+  function _alpha(hex, a) {
+    var r = parseInt(hex.slice(1,3), 16);
+    var g = parseInt(hex.slice(3,5), 16);
+    var b = parseInt(hex.slice(5,7), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  }
+
+  function _getExpressionLabel(expr) {
+    var map = {
+      'default': '通常',
+      'smile': '微笑',
+      'sad': '忧伤',
+      'surprised': '惊讶',
+      'excited': '兴奋',
+      'confused': '困惑',
+      'shocked': '震惊',
+      'happy': '开心',
+      'proud': '得意',
+      'amazed': '赞叹',
+      'determined': '坚定',
+      'gentle': '温柔',
+      'thoughtful': '沉思',
+      'worried': '担忧',
+      'sympathetic': '同情',
+      'peaceful': '安详',
+      'serious': '严肃'
+    };
+    return map[expr] || expr;
+  }
+
+  function hideCharacter(charId, transition) {
+    var charEl = _els.charLayer.querySelector('[data-char="' + charId + '"]');
+    if (!charEl) return;
+    charEl.classList.remove('active');
+    charEl.classList.add('fade-out');
+    setTimeout(function() {
+      if (charEl.parentNode) {
+        charEl.parentNode.removeChild(charEl);
+      }
+    }, 500);
+  }
+
+  function updateCharacterExpression(charId, expression, charConfig) {
+    var charData = charConfig ? charConfig.characters[charId] : null;
+    if (!charData) return;
+
+    var charEl = _els.charLayer.querySelector('[data-char="' + charId + '"]');
+    if (!charEl) return;
+
+    var sprites = charData.sprites || charData.expressions;
+    var spriteFile = sprites && sprites[expression] ? sprites[expression] : null;
+
+    if (charEl.classList.contains('char-sprite') && spriteFile) {
+      if (typeof spriteFile === 'object') spriteFile = spriteFile.file;
+      charEl.style.backgroundImage = 'url(assets/characters/' + spriteFile + ')';
+    } else if (charEl.classList.contains('char-placeholder')) {
+      // 更新占位符表情
+      var exprEl = charEl.querySelector('.char-placeholder-expression');
+      if (exprEl) {
+        exprEl.textContent = _getExpressionLabel(expression);
+      }
+    }
+  }
+
+  function moveCharacter(charId, position, duration) {
+    var charEl = _els.charLayer.querySelector('[data-char="' + charId + '"]');
+    if (!charEl) return;
+    charEl.style.transition = 'left ' + duration + 'ms ease, transform ' + duration + 'ms ease';
+    charEl.setAttribute('data-position', position);
+  }
+
+  // ==================== 选择分支 ====================
+
+  function showChoices(prompt, options) {
+    _els.choiceContainer.innerHTML = '';
+
+    if (prompt) {
+      var promptEl = document.createElement('div');
+      promptEl.className = 'choice-prompt';
+      promptEl.textContent = prompt;
+      _els.choiceContainer.appendChild(promptEl);
+    }
+
+    options.forEach(function(opt, index) {
+      var btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.textContent = opt.text;
+      btn.addEventListener('click', function() {
+        VN.handleChoice(index);
+      });
+      btn.style.animationDelay = (index * 100) + 'ms';
+      _els.choiceContainer.appendChild(btn);
+    });
+
+    _els.choiceContainer.classList.add('visible');
+    hideClickIndicator();
+  }
+
+  function hideChoices() {
+    _els.choiceContainer.classList.remove('visible');
+    _els.choiceContainer.innerHTML = '';
+  }
+
+  // ==================== 屏幕效果 ====================
+
+  function screenShake(intensity, duration) {
+    var container = _els.gameContainer;
+    var origTransform = container.style.transform || '';
+    var shakeInterval = setInterval(function() {
+      var x = (Math.random() - 0.5) * intensity * 2;
+      var y = (Math.random() - 0.5) * intensity * 2;
+      container.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+    }, 30);
+
+    setTimeout(function() {
+      clearInterval(shakeInterval);
+      container.style.transform = origTransform;
+    }, duration);
+  }
+
+  function flash(color, duration) {
+    _els.overlay.style.backgroundColor = color;
+    _els.overlay.style.opacity = '0.8';
+    _els.overlay.classList.add('visible');
+    setTimeout(function() {
+      _els.overlay.style.opacity = '0';
+      setTimeout(function() {
+        _els.overlay.classList.remove('visible');
+      }, 300);
+    }, duration);
+  }
+
+  // ==================== 界面切换 ====================
+
+  function showTitle(title, subtitle) {
+    _els.titleScreen.querySelector('.title-text').textContent = title || '';
+    _els.titleScreen.querySelector('.subtitle-text').textContent = subtitle || '';
+    _els.titleScreen.classList.add('visible');
+    _els.textBox.classList.remove('visible');
+    hideChoices();
+    hideClickIndicator();
+  }
+
+  function hideTitle() {
+    _els.titleScreen.classList.remove('visible');
+  }
+
+  function showEnding(message) {
+    _els.endingText.textContent = message || '—— 未完待续 ——';
+    _els.endingScreen.classList.add('visible');
+    hideClickIndicator();
+  }
+
+  function hideEnding() {
+    _els.endingScreen.classList.remove('visible');
+  }
+
+  function showMenu() {
+    _els.menuPanel.classList.add('visible');
+  }
+
+  function hideMenu() {
+    _els.menuPanel.classList.remove('visible');
+  }
+
+  function showSettings(currentTextSpeed, autoMode) {
+    var speedSlider = _els.settingsPanel.querySelector('#speed-slider');
+    var autoToggle = _els.settingsPanel.querySelector('#auto-toggle');
+    if (speedSlider) speedSlider.value = currentTextSpeed;
+    if (autoToggle) autoToggle.checked = autoMode;
+    _els.settingsPanel.classList.add('visible');
+  }
+
+  function hideSettings() {
+    _els.settingsPanel.classList.remove('visible');
+  }
+
+  function showSaveLoad(mode, slots) {
+    var panel = _els.saveLoadPanel;
+    var title = panel.querySelector('.panel-title');
+    title.textContent = mode === 'save' ? '保存进度' : '读取进度';
+    panel.setAttribute('data-mode', mode);
+
+    var slotContainer = panel.querySelector('.slot-list');
+    slotContainer.innerHTML = '';
+
+    for (var i = 0; i < 8; i++) {
+      var slot = slots[i];
+      var slotEl = document.createElement('div');
+      slotEl.className = 'save-slot' + (slot ? ' has-data' : '');
+
+      if (slot) {
+        var date = new Date(slot.timestamp);
+        var timeStr = date.getFullYear() + '/' +
+          String(date.getMonth() + 1).padStart(2, '0') + '/' +
+          String(date.getDate()).padStart(2, '0') + ' ' +
+          String(date.getHours()).padStart(2, '0') + ':' +
+          String(date.getMinutes()).padStart(2, '0');
+
+        slotEl.innerHTML =
+          '<span class="slot-number">存档 ' + (i + 1) + '</span>' +
+          '<span class="slot-info">' + timeStr + '</span>' +
+          '<span class="slot-scene">' + (slot.sceneId || '未知场景') + '</span>';
+      } else {
+        slotEl.innerHTML =
+          '<span class="slot-number">存档 ' + (i + 1) + '</span>' +
+          '<span class="slot-empty">—— 空 ——</span>';
+      }
+
+      slotEl.addEventListener('click', (function(idx) {
+        return function() {
+          if (mode === 'save') {
+            VNSave.saveSlot(idx);
+            showSaveLoad('save', VNSave.getAllSlots());
+          } else {
+            if (slots[idx]) {
+              VNSave.loadSlot(idx);
+              hideSaveLoad();
+              hideMenu();
+            }
+          }
+        };
+      })(i));
+
+      slotContainer.appendChild(slotEl);
+    }
+
+    panel.classList.add('visible');
+  }
+
+  function hideSaveLoad() {
+    _els.saveLoadPanel.classList.remove('visible');
+  }
+
+  function hideAllPanels() {
+    hideMenu();
+    hideSettings();
+    hideSaveLoad();
+  }
+
+  // ==================== 角色清理(读档时) ====================
+
+  function clearAllCharacters() {
+    _els.charLayer.innerHTML = '';
+  }
+
+  function restoreAllCharacters(charState, config) {
+    clearAllCharacters();
+    if (!charState || !config) return;
+    Object.keys(charState).forEach(function(charId) {
+      var info = charState[charId];
+      showCharacter(charId, info.position, info.expression, config, 'none');
+    });
+  }
+
+  // ==================== 公开 API ====================
+
+  return {
+    init: init,
+    showDialogue: showDialogue,
+    showNarration: showNarration,
+    skipTypewriter: skipTypewriter,
+    isTyping: isTyping,
+    clearTypewriter: clearTypewriter,
+    setBackground: setBackground,
+    showCharacter: showCharacter,
+    hideCharacter: hideCharacter,
+    updateCharacterExpression: updateCharacterExpression,
+    moveCharacter: moveCharacter,
+    showChoices: showChoices,
+    hideChoices: hideChoices,
+    screenShake: screenShake,
+    flash: flash,
+    showTitle: showTitle,
+    hideTitle: hideTitle,
+    showEnding: showEnding,
+    hideEnding: hideEnding,
+    showMenu: showMenu,
+    hideMenu: hideMenu,
+    showSettings: showSettings,
+    hideSettings: hideSettings,
+    showSaveLoad: showSaveLoad,
+    hideSaveLoad: hideSaveLoad,
+    hideAllPanels: hideAllPanels,
+    clearAllCharacters: clearAllCharacters,
+    restoreAllCharacters: restoreAllCharacters
+  };
+
+})();
+
+  </script>
+  <script>
+/**
+ * 白银之城 · 音频系统
+ */
+const VNAudio = (function() {
+  'use strict';
+
+  var _el = null;
+  var _vol = 0.5;
+  var _cur = null;
+
+  var _files = {
+    'bgm_title':'bgm_title.mp3', 'bgm_prologue':'bgm_prologue.mp3',
+    'bgm_daily1':'bgm_daily1.mp3', 'bgm_daily2':'bgm_daily2.mp3',
+    'bgm_daily3':'bgm_daily3.mp3', 'bgm_bar':'bgm_bar.mp3',
+    'bgm_world':'bgm_world.mp3'
+  };
+
+  function init() {
+    _el = document.getElementById('bgm-audio');
+    if (!_el) {
+      _el = document.createElement('audio');
+      _el.id = 'bgm-audio';
+      _el.style.display = 'none';
+      document.body.appendChild(_el);
+    }
+    _el.loop = true;
+    _el.volume = _vol;
+    // 预加载标题音乐
+    _el.src = 'assets/music/bgm_title.mp3';
+    _el.load();
+    _cur = 'bgm_title';
+    console.log('[音频] 就绪');
+  }
+
+  function switchTo(id) {
+    var file = _files[id];
+    if (!file) return;
+    var src = 'assets/music/' + file;
+    if (_cur === id && _el.src && !_el.paused) return; // 同一首在播，跳过
+    _cur = id;
+
+    if (_el.src.indexOf(file) >= 0) {
+      // 同一文件只 resume，不重载
+      _el.volume = _vol;
+      _el.play().then(function() { console.log('[音频] ' + id); })
+               .catch(function(e) { console.warn('[音频] 受阻:', e.name); });
+    } else {
+      _el.src = src;
+      _el.volume = _vol;
+      _el.play().then(function() { console.log('[音频] ' + id); })
+               .catch(function(e) { console.warn('[音频] 受阻:', e.name); });
+    }
+  }
+
+  function playTitle() { switchTo('bgm_title'); }
+
+  function stop()     { _el.pause(); _cur = null; }
+  function setVolume(v) { _vol = v; _el.volume = v; }
+
+  return { init:init, switchTo:switchTo, playTitle:playTitle, stop:stop, setVolume:setVolume };
+
+})();
+
+  </script>
+  <script>
+/**
+ * ========================================
+ *  白银之城 · 存档系统
+ *  Silver City VN - Save/Load Manager
+ * ========================================
+ *
+ *  负责: localStorage 存档/读档、自动存档、多槽位管理
+ */
+
+const VNSave = (function() {
+  'use strict';
+
+  const STORAGE_KEY = 'silver_city_vn_saves';
+  const AUTO_SLOT = -1;
+
+  // ==================== 存储 ====================
+
+  function _readAll() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      console.error('[存档] 读取失败:', e);
+      return {};
+    }
+  }
+
+  function _writeAll(data) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.error('[存档] 写入失败 (可能存储空间不足):', e);
+    }
+  }
+
+  // ==================== 操作 ====================
+
+  function saveSlot(slotIndex) {
+    const snapshot = VN.getSaveSnapshot();
+    if (!snapshot) return false;
+
+    const all = _readAll();
+    all[String(slotIndex)] = snapshot;
+    _writeAll(all);
+    console.log('[存档] 已保存到槽位 ' + (slotIndex + 1));
+    return true;
+  }
+
+  function saveAuto(snapshot) {
+    const all = _readAll();
+    all['_auto'] = snapshot;
+    _writeAll(all);
+  }
+
+  function loadSlot(slotIndex) {
+    const all = _readAll();
+    const snapshot = all[String(slotIndex)];
+    if (!snapshot) {
+      console.warn('[存档] 槽位 ' + (slotIndex + 1) + ' 无存档数据');
+      return false;
+    }
+
+    VN.restoreSnapshot(snapshot);
+
+    // 恢复视觉状态
+    const config = VN.getConfig();
+    if (snapshot.currentBg) {
+      VNRenderer.setBackground(snapshot.currentBg, config, 'none');
+    }
+    VNRenderer.clearAllCharacters();
+    if (snapshot.charactersOnScreen) {
+      VNRenderer.restoreAllCharacters(snapshot.charactersOnScreen, config);
+    }
+    if (snapshot.currentBgm) {
+      VNAudio.playBGM(snapshot.currentBgm, config, 0.7, 500);
+    }
+
+    VNRenderer.hideAllPanels();
+    VNRenderer.hideTitle();
+    VNRenderer.hideEnding();
+
+    console.log('[存档] 从槽位 ' + (slotIndex + 1) + ' 读取成功');
+    VN.executeCurrentLine();
+    return true;
+  }
+
+  function loadAuto() {
+    const all = _readAll();
+    const snapshot = all['_auto'];
+    if (!snapshot) return false;
+    VN.restoreSnapshot(snapshot);
+
+    const config = VN.getConfig();
+    if (snapshot.currentBg) {
+      VNRenderer.setBackground(snapshot.currentBg, config, 'none');
+    }
+    VNRenderer.clearAllCharacters();
+    if (snapshot.charactersOnScreen) {
+      VNRenderer.restoreAllCharacters(snapshot.charactersOnScreen, config);
+    }
+    if (snapshot.currentBgm) {
+      VNAudio.playBGM(snapshot.currentBgm, config, 0.7, 500);
+    }
+
+    VNRenderer.hideAllPanels();
+    VNRenderer.hideTitle();
+    VNRenderer.hideEnding();
+    VN.executeCurrentLine();
+    return true;
+  }
+
+  function getSlot(slotIndex) {
+    const all = _readAll();
+    return all[String(slotIndex)] || null;
+  }
+
+  function getAllSlots() {
+    const all = _readAll();
+    const slots = [];
+    for (let i = 0; i < 8; i++) {
+      slots.push(all[String(i)] || null);
+    }
+    return slots;
+  }
+
+  function deleteSlot(slotIndex) {
+    const all = _readAll();
+    delete all[String(slotIndex)];
+    _writeAll(all);
+    console.log('[存档] 已删除槽位 ' + (slotIndex + 1));
+  }
+
+  function hasAnySave() {
+    const all = _readAll();
+    return Object.keys(all).length > 0;
+  }
+
+  return {
+    saveSlot: saveSlot,
+    saveAuto: saveAuto,
+    loadSlot: loadSlot,
+    loadAuto: loadAuto,
+    getSlot: getSlot,
+    getAllSlots: getAllSlots,
+    deleteSlot: deleteSlot,
+    hasAnySave: hasAnySave
+  };
+
+})();
+
+  </script>
+  <script>
+/**
+ * ========================================
+ *  白银之城 · 主入口
+ *  Silver City VN - Main Entry
+ * ========================================
+ */
+
+(function() {
+  'use strict';
+
+  async function init() {
+    VNRenderer.init();
+    VNAudio.init();
+
+    const configOk = await VN.loadConfig();
+    if (!configOk) {
+      alert('配置文件加载失败\n请通过 http://localhost:8080 访问。');
+      return;
+    }
+
+    var config = VN.getConfig();
+    var gameInfo = config.game || {};
+
+    VN.setTextSpeed(gameInfo.default_text_speed || 40);
+    VN.onStateChange(handleEngineEvent);
+    bindEvents(gameInfo);
+
+    var scriptOk = await VN.loadScript();
+    if (!scriptOk) {
+      alert('剧本文件加载失败');
+      return;
+    }
+
+    // 显示启动画面 + 标题插图
+    document.getElementById('title-screen').classList.remove('visible');
+    document.querySelector('.splash-bg').style.background = 'url(assets/backgrounds/title.png) center/cover no-repeat';
+    VNRenderer.setBackground('title_bg', config, 'none');
+    var splash = document.getElementById('splash-screen');
+
+    splash.addEventListener('click', function go() {
+      splash.removeEventListener('click', go);
+      VNAudio.switchTo('bgm_title');
+      splash.classList.add('hidden');
+      VNRenderer.showTitle(gameInfo.title, gameInfo.subtitle);
+    });
+
+    console.log('[主入口] 初始化完成');
+  }
+
+  // ==================== 引擎事件 → 渲染器 ====================
+
+  async function handleEngineEvent(event, data) {
+    var config = VN.getConfig();
+    var state = VN.getState();
+
+    switch (event) {
+
+      case 'dialogue': {
+        var cc = data.character ? VN.getCharacter(data.character) : null;
+        var name = cc ? cc.name : data.character;
+        await VNRenderer.showDialogue(name, data.text, cc, state.textSpeed, data.waitForClick);
+        break;
+      }
+      case 'narration':
+        await VNRenderer.showNarration(data.text, state.textSpeed, data.waitForClick);
+        break;
+
+      case 'choice':
+        VNRenderer.showChoices(data.prompt, data.options);
+        break;
+
+      case 'bg_change':
+        VNRenderer.setBackground(data.id, config, data.transition);
+        break;
+
+      case 'char_show':
+        VNRenderer.showCharacter(data.id, data.position, data.expression, config, data.transition);
+        break;
+      case 'char_hide':
+        VNRenderer.hideCharacter(data.id, data.transition);
+        break;
+      case 'char_expr':
+        VNRenderer.updateCharacterExpression(data.id, data.expression, config);
+        break;
+      case 'char_move':
+        VNRenderer.moveCharacter(data.id, data.position, data.duration);
+        break;
+
+      case 'bgm':
+        VNAudio.switchTo(data.id);
+        break;
+      case 'bgm_stop':
+      case 'sfx':
+        break;
+
+      case 'screen_shake':
+        VNRenderer.screenShake(data.intensity, data.duration);
+        break;
+      case 'flash':
+        VNRenderer.flash(data.color, data.duration);
+        break;
+
+      case 'end':
+        VNRenderer.showEnding(data.message);
+        break;
+      case 'title':
+        VNRenderer.hideEnding();
+        VNRenderer.setBackground('title_bg', config, 'none');
+        VNRenderer.showTitle(config.game.title, config.game.subtitle);
+        VNAudio.playTitle();
+        break;
+      case 'scene_end':
+        VNRenderer.showEnding('—— 本章结束 ——');
+        break;
+
+      case 'choice_made':
+        VNRenderer.hideChoices();
+        VNRenderer.hideClickIndicator();
+        break;
+    }
+  }
+
+  // ==================== UI 事件 ====================
+
+  function bindEvents(gameInfo) {
+    var gc = document.getElementById('game-container');
+
+    // 点击推进对话
+    gc.addEventListener('click', function(e) {
+      if (e.target.closest('.choice-btn,.menu-btn,.menu-panel,.settings-panel,.save-load-panel,.title-screen,.ending-screen')) return;
+      if (VNRenderer.isTyping()) { VNRenderer.skipTypewriter(); }
+      else { VN.handleClick(); VNRenderer.hideClickIndicator(); }
+    });
+
+    // 键盘
+    document.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        if (VNRenderer.isTyping()) { VNRenderer.skipTypewriter(); }
+        else { VN.handleClick(); VNRenderer.hideClickIndicator(); }
+      }
+      if (e.key === 'Escape') VNRenderer.hideAllPanels();
+    });
+
+    // 新游戏
+    var btn = document.getElementById('btn-start');
+    if (btn) btn.addEventListener('click', function() {
+      VNRenderer.hideTitle(); VNRenderer.hideEnding();
+      VNAudio.switchTo('bgm_daily1');
+      VN.startGame();
+    });
+
+    // 继续
+    btn = document.getElementById('btn-continue');
+    if (btn) {
+      btn.addEventListener('click', function() {
+        if (!VNSave.loadAuto()) alert('没有找到自动存档。请先开始新游戏。');
+      });
+      if (!VNSave.hasAnySave()) btn.style.display = 'none';
+    }
+
+    // 菜单
+    btn = document.getElementById('btn-menu');
+    if (btn) btn.addEventListener('click', function(e) { e.stopPropagation(); VNRenderer.showMenu(); });
+
+    btn = document.getElementById('menu-resume');
+    if (btn) btn.addEventListener('click', function() { VNRenderer.hideMenu(); });
+
+    btn = document.getElementById('menu-save');
+    if (btn) btn.addEventListener('click', function() { VNRenderer.showSaveLoad('save', VNSave.getAllSlots()); });
+
+    btn = document.getElementById('menu-load');
+    if (btn) btn.addEventListener('click', function() { VNRenderer.showSaveLoad('load', VNSave.getAllSlots()); });
+
+    btn = document.getElementById('menu-settings');
+    if (btn) btn.addEventListener('click', function() {
+      var s = VN.getState(); VNRenderer.showSettings(s.textSpeed, s.autoMode);
+    });
+
+    btn = document.getElementById('menu-title');
+    if (btn) btn.addEventListener('click', function() {
+      VNRenderer.hideMenu(); VNRenderer.hideEnding();
+      VNRenderer.clearAllCharacters();
+      VNRenderer.setBackground('title_bg', VN.getConfig(), 'none');
+      VNRenderer.showTitle(gameInfo.title, gameInfo.subtitle);
+      VNAudio.playTitle();
+    });
+
+    // 设置
+    var sld = document.getElementById('speed-slider');
+    if (sld) sld.addEventListener('input', function() { VN.setTextSpeed(parseInt(this.value)); });
+
+    var tog = document.getElementById('auto-toggle');
+    if (tog) tog.addEventListener('change', function() { VN.setAutoMode(this.checked); });
+
+    sld = document.getElementById('bgm-volume');
+    if (sld) sld.addEventListener('input', function() { VNAudio.setVolume(parseFloat(this.value)); });
+
+    // SFX 音量滑杆仍然存在但不影响任何东西，留着 UI 完整性
+
+    // 关闭按钮
+    document.querySelectorAll('.close-btn').forEach(function(b) {
+      b.addEventListener('click', function() { VNRenderer.hideAllPanels(); });
+    });
+
+    btn = document.getElementById('save-back');
+    if (btn) btn.addEventListener('click', function() { VNRenderer.hideSaveLoad(); });
+
+    btn = document.getElementById('settings-back');
+    if (btn) btn.addEventListener('click', function() { VNRenderer.hideSettings(); });
+
+    // 结局→标题
+    btn = document.getElementById('ending-back');
+    if (btn) btn.addEventListener('click', function() {
+      VNRenderer.hideEnding(); VNRenderer.clearAllCharacters();
+      VNRenderer.setBackground('title_bg', VN.getConfig(), 'none');
+      VNRenderer.showTitle(gameInfo.title, gameInfo.subtitle);
+      VNAudio.playTitle();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+
+})();
+
+  </script>
+</body>
+</html>
