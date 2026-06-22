@@ -1,4 +1,4 @@
-{
+window.GAME_SCRIPT = {
   "scenes": {
     "prologue": {
       "name": "序章 · 清晨",
@@ -2495,4 +2495,4 @@
   },
   "title": "白银之城 · 事务所的清晨",
   "start_scene": "prologue"
-}
+};
