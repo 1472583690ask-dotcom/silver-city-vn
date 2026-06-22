@@ -948,6 +948,11 @@ const VN = (function() {
   // ==================== 加载 ====================
 
   async function loadScript() {
+    if (typeof VN_INLINE_SCRIPT !== 'undefined' && VN_INLINE_SCRIPT) {
+      _scriptData = VN_INLINE_SCRIPT;
+      console.log('[VN引擎] 剧本加载完成 (内联):', _scriptData.title);
+      return true;
+    }
     try {
       const resp = await fetch('data/script.json?t=' + Date.now());
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
@@ -961,6 +966,11 @@ const VN = (function() {
   }
 
   async function loadConfig() {
+    if (typeof VN_INLINE_CONFIG !== 'undefined' && VN_INLINE_CONFIG) {
+      _configData = VN_INLINE_CONFIG;
+      console.log('[VN引擎] 配置加载完成 (内联)');
+      return true;
+    }
     try {
       const resp = await fetch('data/config.json?t=' + Date.now());
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
